@@ -32,21 +32,33 @@
 
     --radius: 0.5rem;
 
+    /* Sidebar */
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --fashion: 0 0% 20%; /* #333333 */
+    --fashion-accent: 259 92% 67%; /* #8B5CF6 */
+    --fashion-light: 0 0% 98%; /* #F9F9F9 */
+    --fashion-muted: 0 0% 46%; /* #757575 */
+    --fashion-hover: 0 0% 94%; /* #EFEFEF */
+
+    /* Dashboard */
+    --dashboard-purple: #8B5CF6;
+    --dashboard-light-purple: #F4F1FF;
+    --dashboard-blue: #8B5CF6;
+    --dashboard-light-blue: #D3E4FD;
+    --dashboard-green: #10B981;
+    --dashboard-light-green: #DCFCE7;
+    --dashboard-red: #EF4444;
+    --dashboard-light-red: #FEE2E2;
+    --dashboard-orange: #F97316;
+    --dashboard-light-orange: #FFEDD5;
   }
 
   .dark {
@@ -77,6 +89,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -86,4 +99,91 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+}
+
+@layer utilities {
+  /* Accordion Animations */
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  .animate-accordion-down {
+    animation: accordion-down 0.2s ease-out;
+  }
+
+  .animate-accordion-up {
+    animation: accordion-up 0.2s ease-out;
+  }
+
+  /* Radius */
+  .rounded-lg {
+    border-radius: var(--radius);
+  }
+
+  .rounded-md {
+    border-radius: calc(var(--radius) - 2px);
+  }
+
+  .rounded-sm {
+    border-radius: calc(var(--radius) - 4px);
+  }
+
+  /* ----- Sidebar Color Utilities ----- */
+  .bg-sidebar-background { background-color: hsl(var(--sidebar-background)); }
+  .text-sidebar-foreground { color: hsl(var(--sidebar-foreground)); }
+  .bg-sidebar-primary { background-color: hsl(var(--sidebar-primary)); }
+  .text-sidebar-primary-foreground { color: hsl(var(--sidebar-primary-foreground)); }
+  .bg-sidebar-accent { background-color: hsl(var(--sidebar-accent)); }
+  .text-sidebar-accent-foreground { color: hsl(var(--sidebar-accent-foreground)); }
+  .border-sidebar-border { border-color: hsl(var(--sidebar-border)); }
+  .ring-sidebar-ring { --tw-ring-color: hsl(var(--sidebar-ring)); }
+
+  /* ----- Dashboard Color Utilities ----- */
+  .bg-dashboard-purple { background-color: var(--dashboard-purple); }
+  .bg-dashboard-light-purple { background-color: var(--dashboard-light-purple); }
+  .bg-dashboard-blue { background-color: var(--dashboard-blue); }
+  .bg-dashboard-light-blue { background-color: var(--dashboard-light-blue); }
+  .bg-dashboard-green { background-color: var(--dashboard-green); }
+  .bg-dashboard-light-green { background-color: var(--dashboard-light-green); }
+  .bg-dashboard-red { background-color: var(--dashboard-red); }
+  .bg-dashboard-light-red { background-color: var(--dashboard-light-red); }
+  .bg-dashboard-orange { background-color: var(--dashboard-orange); }
+  .bg-dashboard-light-orange { background-color: var(--dashboard-light-orange); }
+
+  .text-dashboard-purple { color: var(--dashboard-purple); }
+  .text-dashboard-blue { color: var(--dashboard-blue); }
+  .text-dashboard-green { color: var(--dashboard-green); }
+  .text-dashboard-red { color: var(--dashboard-red); }
+  .text-dashboard-orange { color: var(--dashboard-orange); }
+
+  /* Optional border utilities */
+  .border-dashboard-red { border-color: var(--dashboard-red); }
+  .border-dashboard-green { border-color: var(--dashboard-green); }
+
+
+  .bg-fashion { background-color: hsl(var(--fashion)); }
+  .bg-fashion-accent { background-color: hsl(var(--fashion-accent)); }
+  .bg-fashion-light { background-color: hsl(var(--fashion-light)); }
+  .bg-fashion-muted { background-color: hsl(var(--fashion-muted)); }
+  .bg-fashion-hover { background-color: hsl(var(--fashion-hover)); }
+
+  .text-fashion { color: hsl(var(--fashion)); }
+  .text-fashion-accent { color: hsl(var(--fashion-accent)); }
+  .text-fashion-light { color: hsl(var(--fashion-light)); }
+  .text-fashion-muted { color: hsl(var(--fashion-muted)); }
+  .text-fashion-hover { color: hsl(var(--fashion-hover)); }
 }

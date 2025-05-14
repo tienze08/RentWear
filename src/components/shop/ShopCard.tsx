@@ -1,6 +1,7 @@
 
+import { Shop } from "@/lib/types";
 import { Link } from "react-router-dom";
-import { Shop } from "@/types";
+
 
 interface ShopCardProps {
   shop: Shop;
@@ -24,7 +25,7 @@ export const ShopCard = ({ shop }: ShopCardProps) => {
         <p className="text-fashion-muted text-sm mt-2 text-center line-clamp-2">{shop.description}</p>
         
         {shop.featured && (
-          <span className="mt-3 inline-block bg-fashion-accent/10 text-fashion-accent px-3 py-1 rounded-full text-xs font-medium">
+          <span className="mt-3 inline-block bg-dashboard-light-purple text-fashion-accent px-3 py-1 rounded-full text-xs font-medium">
             Featured Shop
           </span>
         )}

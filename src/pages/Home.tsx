@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ShopCard } from "@/components/shop/ShopCard";
-import { Product, Shop } from "@/types";
+
 import { getFeaturedShops, mockProducts } from "@/data/mockData";
+import { Product, Shop } from "@/lib/types";
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -26,22 +27,22 @@ const Home = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-fashion-DEFAULT to-fashion-accent text-white py-16">
+      <div className="bg-dashboard-blue text-white py-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Rent Designer Fashion For Any Occasion</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Rent Designer Fashion For Any Occasion</h1>
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
             Choose from hundreds of styles across multiple boutiques and designers
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link 
               to="/products" 
-              className="px-8 py-3 bg-white text-fashion-DEFAULT font-semibold rounded-lg shadow-md hover:bg-gray-100 transition"
+              className="px-10 py-4 bg-white text-indigo-600 font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition"
             >
               Browse All Products
             </Link>
             <Link 
               to="/shops" 
-              className="px-8 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition"
+              className="px-10 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition"
             >
               Explore Shops
             </Link>
@@ -77,19 +78,19 @@ const Home = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-fashion-accent rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">1</div>
+              <div className="w-16 h-16 bg-dashboard-blue rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">1</div>
               <h3 className="text-xl font-semibold mb-2">Browse & Select</h3>
               <p className="text-fashion-muted">Find the perfect outfit from our curated collection of designer pieces.</p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-fashion-accent rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">2</div>
+              <div className="w-16 h-16 bg-dashboard-blue rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">2</div>
               <h3 className="text-xl font-semibold mb-2">Rent</h3>
               <p className="text-fashion-muted">Choose your rental period and complete your order.</p>
             </div>
             
             <div className="text-center">
-              <div className="w-16 h-16 bg-fashion-accent rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">3</div>
+              <div className="w-16 h-16 bg-dashboard-blue rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">3</div>
               <h3 className="text-xl font-semibold mb-2">Wear & Return</h3>
               <p className="text-fashion-muted">Enjoy your rental and return it when you're done. No cleaning required!</p>
             </div>
@@ -119,7 +120,7 @@ const Home = () => {
       </section>
 
       {/* Join Banner */}
-      <section className="py-16 bg-fashion-accent text-white">
+      <section className="py-16 bg-dashboard-blue text-white bg-dashboard-light-purple">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Refresh Your Wardrobe?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -127,7 +128,7 @@ const Home = () => {
           </p>
           <Link 
             to="/products" 
-            className="px-8 py-3 bg-white text-fashion-accent font-semibold rounded-lg shadow-md hover:bg-gray-100 transition inline-block"
+            className="px-8 py-3 bg-white text-fashion-accent font-semibold rounded-lg shadow-md hover:bg-gray-100 transition inline-block text-dashboard-blue"
           >
             Start Browsing
           </Link>

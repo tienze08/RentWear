@@ -4,7 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/product/ProductCard";
 import { getShopById, getProductsByShop } from "@/data/mockData";
-import { Shop, Product } from "@/types";
+import { Product, Shop } from "@/lib/types";
+
 
 const ShopDetail = () => {
   const { shopId } = useParams<{ shopId: string }>();
@@ -74,7 +75,7 @@ const ShopDetail = () => {
               <p className="text-fashion-muted">{shop.description}</p>
               
               {shop.featured && (
-                <span className="mt-3 inline-block bg-fashion-accent/10 text-fashion-accent px-3 py-1 rounded-full text-xs font-medium">
+                <span className="mt-3 inline-block bg-dashboard-light-purple text-fashion-accent px-3 py-1 rounded-full text-xs font-medium">
                   Featured Shop
                 </span>
               )}
