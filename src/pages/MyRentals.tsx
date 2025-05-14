@@ -91,19 +91,19 @@ const MyRentals = () => {
           <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger 
               value="active" 
-              className="data-[state=active]:bg-fashion-accent data-[state=active]:text-white"
+              className="data-[state=active]:bg-fashion-accent data-[state=active]:text-blue-800"
             >
               Active ({activeRentals.length})
             </TabsTrigger>
             <TabsTrigger 
               value="completed"
-              className="data-[state=active]:bg-fashion-accent data-[state=active]:text-white"
+              className="data-[state=active]:bg-fashion-accent data-[state=active]:text-blue-800"
             >
               Completed ({completedRentals.length})
             </TabsTrigger>
             <TabsTrigger 
               value="cancelled"
-              className="data-[state=active]:bg-fashion-accent data-[state=active]:text-white"
+              className="data-[state=active]:bg-fashion-accent data-[state=active]:text-blue-800"
             >
               Cancelled ({cancelledRentals.length})
             </TabsTrigger>
