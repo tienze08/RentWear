@@ -1,9 +1,16 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { ShoppingBag, Menu, X, UserRound } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export const Navbar = () => {
   const { totalItems } = useCart();
@@ -35,8 +42,8 @@ export const Navbar = () => {
             </Link>
           </nav>
 
-          {/* Cart Icon */}
-          <div className="flex items-center">
+          {/* Cart and User Icons */}
+          <div className="flex items-center space-x-4">
             <Link to="/cart" className="relative">
               <ShoppingBag className="h-6 w-6 text-fashion-DEFAULT" />
               {totalItems > 0 && (
@@ -46,9 +53,62 @@ export const Navbar = () => {
               )}
             </Link>
             
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full focus-visible:ring-2 focus-visible:ring-fashion-accent transition"
+                >
+                  <Avatar className="h-8 w-8 border border-gray-300">
+                    <AvatarFallback className="bg-fashion-accent text-white text-sm">
+                      JD
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                align="end"
+                className="w-52 mt-2 rounded-xl border border-gray-200 bg-white shadow-lg p-1"
+              >
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/settings"
+                    className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-400 hover:text-white transition-colors w-full cursor-pointer"
+                  >
+                    <UserRound className="w-4 h-4" />
+                    Settings
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/my-rentals"
+                    className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-400 hover:text-white transition-colors w-full cursor-pointer"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    My Rentals
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator className="my-1" />
+
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/login"
+                    className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-400 transition-colors w-full cursor-pointer"
+                  >
+                    <UserRound className="w-4 h-4" />
+                    Sign In
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
             {/* Mobile Menu Button */}
             <button 
-              className="ml-4 md:hidden text-fashion-DEFAULT" 
+              className="md:hidden text-fashion-DEFAULT" 
               onClick={toggleMenu}
               aria-label="Toggle menu"
             >
@@ -95,6 +155,15 @@ export const Navbar = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   My Rentals
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/settings" 
+                  className="block text-fashion-DEFAULT hover:text-fashion-accent"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Settings
                 </Link>
               </li>
             </ul>

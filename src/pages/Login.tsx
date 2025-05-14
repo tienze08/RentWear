@@ -57,7 +57,7 @@ const Login = () => {
   return (
     <Layout>
       <div className="container mx-auto py-10 flex justify-center items-center min-h-[calc(100vh-150px)]">
-        <Card className="w-full max-w-md border-fashion-accent/20 shadow-lg">
+        <Card className="w-full max-w-md border-sidebar-border shadow-lg ">
           <CardHeader className="space-y-1 pb-6">
             <CardTitle className="text-3xl font-bold text-fashion-DEFAULT text-center">Welcome Back</CardTitle>
             <CardDescription className="text-center text-muted-foreground">
@@ -79,7 +79,7 @@ const Login = () => {
                           <Input 
                             placeholder="you@example.com" 
                             {...field} 
-                            className="pl-10 bg-muted/30 border-muted" 
+                            className="pl-10 bg-muted/30 border-muted border-sidebar-border" 
                           />
                         </FormControl>
                       </div>
@@ -101,7 +101,7 @@ const Login = () => {
                             type={showPassword ? "text" : "password"} 
                             placeholder="••••••••" 
                             {...field}
-                            className="pl-10 bg-muted/30 border-muted" 
+                            className="pl-10 bg-muted/30 border-muted border-sidebar-border" 
                           />
                         </FormControl>
                         <button 

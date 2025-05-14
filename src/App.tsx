@@ -14,6 +14,7 @@ import Register from "./pages/Register";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { CartProvider } from "./contexts/CartContext";
 import { RentalProvider } from "./contexts/RentalContext";
+import Settings from "./pages/Setting";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/my-rentals" element={<MyRentals />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

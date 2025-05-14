@@ -5,9 +5,10 @@ import { Layout } from "@/components/layout/Layout";
 import { useRentals } from "@/contexts/RentalContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Rental } from "@/types";
+
 import { CalendarDays } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Rental } from "@/lib/types";
 
 const MyRentals = () => {
   const { rentals, cancelRental } = useRentals();
