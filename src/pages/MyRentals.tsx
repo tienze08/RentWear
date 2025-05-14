@@ -88,22 +88,22 @@ const MyRentals = () => {
         <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-8">My Rentals</h1>
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8 bg-gray-100">
             <TabsTrigger 
               value="active" 
-              className="data-[state=active]:bg-fashion-accent data-[state=active]:text-blue-800"
+              className="data-[state=active]:bg-blue-400 data-[state=active]:text-white"
             >
               Active ({activeRentals.length})
             </TabsTrigger>
             <TabsTrigger 
               value="completed"
-              className="data-[state=active]:bg-fashion-accent data-[state=active]:text-blue-800"
+              className="data-[state=active]:bg-blue-400 data-[state=active]:text-white"
             >
               Completed ({completedRentals.length})
             </TabsTrigger>
             <TabsTrigger 
               value="cancelled"
-              className="data-[state=active]:bg-fashion-accent data-[state=active]:text-blue-800"
+              className="data-[state=active]:bg-blue-400 data-[state=active]:text-white"
             >
               Cancelled ({cancelledRentals.length})
             </TabsTrigger>
