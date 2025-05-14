@@ -4,11 +4,12 @@ import { useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/product/ProductCard";
 import { mockProducts, getAllCategories } from "@/data/mockData";
-import { Product } from "@/types";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Product } from "@/lib/types";
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();

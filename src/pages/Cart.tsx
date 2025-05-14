@@ -5,10 +5,10 @@ import { Layout } from "@/components/layout/Layout";
 import { useCart } from "@/contexts/CartContext";
 import { useRentals } from "@/contexts/RentalContext";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
-import { Rental } from "@/types";
+
 import { useToast } from "@/hooks/use-toast";
+import { Rental } from "@/lib/types";
 
 const Cart = () => {
   const { items, removeFromCart, totalPrice, clearCart } = useCart();

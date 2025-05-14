@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { getProductById, getShopById } from "@/data/mockData";
-import { Product, Shop } from "@/types";
+
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
+import { Product, Shop } from "@/lib/types";
 
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();

@@ -58,7 +58,7 @@ export const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full focus-visible:ring-2 focus-visible:ring-fashion-accent transition"
+                  className="rounded-full focus-visible:ring-2 focus-visible:ring-fashion-accent transition hover:cursor-pointer"
                 >
                   <Avatar className="h-8 w-8 border border-gray-300">
                     <AvatarFallback className="bg-fashion-accent text-white text-sm">
