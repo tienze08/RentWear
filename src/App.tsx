@@ -11,37 +11,51 @@ import MyRentals from "./pages/MyRentals";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Chat from "./pages/Chat";
 import { TooltipProvider } from "./components/ui/tooltip";
-import { CartProvider } from "./contexts/CartContext";
-import { RentalProvider } from "./contexts/RentalContext";
+import { CartProvider } from "./components/contexts/CartContext";
+import { RentalProvider } from "./components/contexts/RentalContext";
+import { AuthProvider } from "./components/contexts/AuthContext";
+import { UserProvider } from "./components/contexts/UserContext";
+import { SocketProvider } from "./components/contexts/SocketContext";
 import Settings from "./pages/Setting";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <CartProvider>
-        <RentalProvider>
-          <Sonner /> 
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/products/:productId" element={<ProductDetail />} />
-              <Route path="/shops" element={<Shops />} />
-              <Route path="/shops/:shopId" element={<ShopDetail />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/my-rentals" element={<MyRentals />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </RentalProvider>
-      </CartProvider>
-    </TooltipProvider>
+    <BrowserRouter>
+      <TooltipProvider>
+        <AuthProvider>
+          <UserProvider>
+            {/* <SocketProvider> */}
+              <CartProvider>
+                <RentalProvider>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route
+                      path="/products/:productId"
+                      element={<ProductDetail />}
+                    />
+                    <Route path="/shops" element={<Shops />} />
+                    <Route path="/shops/:shopId" element={<ShopDetail />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/my-rentals" element={<MyRentals />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/chat" element={<Chat />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </RentalProvider>
+              </CartProvider>
+            {/* </SocketProvider> */}
+          </UserProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </BrowserRouter>
+    <Sonner />
   </QueryClientProvider>
 );
 

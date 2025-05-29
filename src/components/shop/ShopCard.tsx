@@ -21,7 +21,7 @@ export const ShopCard = ({ shop }: ShopCardProps) => {
             className="w-full h-full object-cover"
           />
         </div>
-        <h3 className="text-xl font-semibold text-fashion-DEFAULT text-center">{shop.name}</h3>
+        <h3 className="text-xl font-semibold text-fashion-DEFAULT text-center">{shop.storeName}</h3>
         <p className="text-fashion-muted text-sm mt-2 text-center line-clamp-2">{shop.description}</p>
         
         {shop.featured && (

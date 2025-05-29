@@ -2,9 +2,10 @@
 import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { ShopCard } from "@/components/shop/ShopCard";
-import { mockShops } from "@/data/mockData";
-import { Shop } from "@/types";
 import { Input } from "@/components/ui/input";
+import ApiConstants from "@/lib/api";
+import { axiosInstance } from "@/lib/axiosInstance";
+import { Shop } from "@/lib/types";
 
 const Shops = () => {
   const [shops, setShops] = useState<Shop[]>([]);
@@ -12,7 +13,16 @@ const Shops = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    setShops(mockShops);
+    const fetchShops = async () => {
+      try {
+        const response = await axiosInstance.get(ApiConstants.LIST_STORES);
+        setShops(response.data.storeInfo);
+      } catch (error) {
+        console.error("Error fetching shops:", error);
+      }
+    };
+
+    fetchShops();
   }, []);
 
   useEffect(() => {
@@ -21,7 +31,7 @@ const Shops = () => {
       setFilteredShops(
         shops.filter(
           shop => 
-            shop.name.toLowerCase().includes(query) || 
+            shop.storeName.toLowerCase().includes(query) || 
             shop.description.toLowerCase().includes(query)
         )
       );
