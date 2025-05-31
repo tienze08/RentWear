@@ -108,33 +108,6 @@ export const Navbar = () => {
                     className="rounded-full focus-visible:ring-2 focus-visible:ring-fashion-accent transition hover:cursor-pointer"
                 >
                   <Avatar className="h-8 w-8 border border-gray-300">
-                    <AvatarFallback className="bg-fashion-accent text-white text-sm">
-                      JD
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent
-                align="end"
-                className="w-52 mt-2 rounded-xl border border-gray-200 bg-white shadow-lg p-1"
-              >
-                <DropdownMenuItem asChild>
-                  <Link
-                    to="/settings"
-                    className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-400 hover:text-white transition-colors w-full cursor-pointer"
-                  >
-                    <UserRound className="w-4 h-4" />
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem asChild>
-                  <Link
-                    to="/my-rentals"
-                    className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-400 hover:text-white transition-colors w-full cursor-pointer"
-                  >
-                    <Avatar className="h-8 w-8 border border-gray-300">
                       {user?.avatar ? (
                         <AvatarImage
                           src={user.avatar}
@@ -145,11 +118,11 @@ export const Navbar = () => {
                           {getInitials(user?.username || "")}
                         </AvatarFallback>
                       )}
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
 
-                <DropdownMenuContent
+              <DropdownMenuContent
                   align="end"
                   className="w-52 mt-2 rounded-xl border border-gray-200 bg-white shadow-lg p-1"
                 >
