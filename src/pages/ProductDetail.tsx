@@ -1,34 +1,42 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { getProductById, getShopById } from "@/data/mockData";
-
-import { useCart } from "@/contexts/CartContext";
+import { useCart } from "@/components/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { Product, Shop } from "@/lib/types";
+import { Store, Product } from "@/lib/types";
+import { axiosInstance } from "@/lib/axiosInstance";
+import ApiConstants from "@/lib/api";
 
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
-  const [shop, setShop] = useState<Shop | null>(null);
+  const [store, setStore] = useState<Store | null>(null);
   const [loading, setLoading] = useState(true);
   const [rentalDays, setRentalDays] = useState(3);
   const { addToCart, isInCart } = useCart();
-  
+
   useEffect(() => {
-    if (productId) {
-      const foundProduct = getProductById(productId);
-      
-      if (foundProduct) {
-        setProduct(foundProduct);
-        const foundShop = getShopById(foundProduct.shopId);
-        setShop(foundShop || null);
+    const fetchProduct = async () => {
+      try {
+        const response = await axiosInstance.get(ApiConstants.GET_PRODUCT_BY_ID(productId || ""));
+        if (response.status !== 200) {
+          throw new Error("Product not found");
+        }
+        const data: Product = response.data;
+        setProduct(data);
+        if (data.storeId) {
+          const storeResponse = await axiosInstance.get(ApiConstants.GET_STORE_BY_ID(data.storeId));
+          const storeData: Store = storeResponse.data;
+          setStore(storeData);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error);
       }
-    }
-    
+    };
+
+    fetchProduct();
     setLoading(false);
   }, [productId]);
 
@@ -49,9 +57,13 @@ const ProductDetail = () => {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-12 text-center">
-          <h1 className="text-2xl font-bold text-fashion-DEFAULT mb-4">Product Not Found</h1>
-          <p className="text-fashion-muted mb-8">The product you're looking for doesn't exist or has been removed.</p>
-          <Link 
+          <h1 className="text-2xl font-bold text-fashion-DEFAULT mb-4">
+            Product Not Found
+          </h1>
+          <p className="text-fashion-muted mb-8">
+            The product you're looking for doesn't exist or has been removed.
+          </p>
+          <Link
             to="/products"
             className="px-6 py-2 bg-fashion-accent text-white rounded-lg hover:bg-fashion-accent/90 transition"
           >
@@ -76,64 +88,74 @@ const ProductDetail = () => {
           {/* Product Image */}
           <div className="lg:w-1/2">
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
-              <img 
-                src={product.imageUrl} 
-                alt={product.name} 
+              <img
+                src={product.images[0]}
+                alt={product.name}
                 className="w-full h-auto object-cover aspect-square"
               />
             </div>
           </div>
-          
+
           {/* Product Details */}
           <div className="lg:w-1/2">
-            <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-2">{product.name}</h1>
-            
-            {shop && (
+            <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-2">
+              {product.name}
+            </h1>
+
+            {store && (
               <div className="mb-4">
-                <Link 
-                  to={`/shops/${shop.id}`}
+                <Link
+                  to={`/stores/${store.id}`}
                   className="text-fashion-accent hover:text-fashion-accent/80 flex items-center gap-2"
                 >
-                  <img 
-                    src={shop.logoUrl} 
-                    alt={shop.name} 
+                  <img
+                    src={store.logoUrl}
+                    alt={store.storeName}
                     className="w-6 h-6 rounded-full object-cover"
                   />
-                  <span>{shop.name}</span>
+                  <span>{store.storeName}</span>
                 </Link>
               </div>
             )}
-            
-            <div className="text-xl font-semibold mb-6">${product.rentalPrice}/day</div>
-            
+
+            <div className="text-xl font-semibold mb-6">
+              ${product.rentalPrice}/day
+            </div>
+
             <p className="text-fashion-muted mb-6">{product.description}</p>
-            
+
             <div className="mb-6">
               <div className="flex items-center gap-4 mb-2">
                 <span className="font-medium">Size:</span>
                 <span>{product.size}</span>
               </div>
-              
+
               <div className="flex items-center gap-4 mb-2">
                 <span className="font-medium">Category:</span>
                 <span>{product.category}</span>
               </div>
-              
+
               <div className="flex items-center gap-4">
                 <span className="font-medium">Availability:</span>
-                <span className={product.available ? "text-green-600" : "text-red-600"}>
+                <span
+                  className={
+                    product.available ? "text-green-600" : "text-red-600"
+                  }
+                >
                   {product.available ? "In Stock" : "Out of Stock"}
                 </span>
               </div>
             </div>
-            
+
             <div className="border-t border-b border-gray-200 py-6 my-6">
               <h3 className="font-semibold mb-4">Rental Duration</h3>
-              
+
               <div className="mb-4">
                 <div className="flex justify-between mb-2">
                   <span className="text-sm">Days: {rentalDays}</span>
-                  <span className="text-sm font-medium">Total: ${totalPrice}</span>
+                  <span className="text-sm font-medium">
+                    Total: ${totalPrice}
+                  </span>
                 </div>
                 <Slider
                   value={[rentalDays]}
@@ -155,7 +177,9 @@ const ProductDetail = () => {
                     min={1}
                     max={14}
                     value={rentalDays}
-                    onChange={(e) => setRentalDays(parseInt(e.target.value) || 1)}
+                    onChange={(e) =>
+                      setRentalDays(parseInt(e.target.value) || 1)
+                    }
                     className="w-20 text-center mx-2"
                   />
                   <button
@@ -167,7 +191,7 @@ const ProductDetail = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex flex-col gap-4">
               <Button
                 onClick={handleAddToCart}
@@ -180,10 +204,13 @@ const ProductDetail = () => {
               >
                 {inCart ? "Added to Cart" : "Add to Cart"}
               </Button>
-              
+
               {inCart && (
                 <Link to="/cart">
-                  <Button variant="outline" className="w-full py-6 text-lg border-fashion-accent text-fashion-accent">
+                  <Button
+                    variant="outline"
+                    className="w-full py-6 text-lg border-fashion-accent text-fashion-accent"
+                  >
                     View Cart
                   </Button>
                 </Link>
