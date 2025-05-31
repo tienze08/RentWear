@@ -4,14 +4,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
-import Shops from "./pages/Shops";
-import ShopDetail from "./pages/ShopDetail";
 import Cart from "./pages/Cart";
 import MyRentals from "./pages/MyRentals";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Chat from "./pages/Chat";
+import Stores from "./pages/Stores";
+import StoreDetail from "./pages/StoreDetail";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { CartProvider } from "./components/contexts/CartContext";
 import { RentalProvider } from "./components/contexts/RentalContext";
@@ -38,8 +38,8 @@ const App = () => (
                       path="/products/:productId"
                       element={<ProductDetail />}
                     />
-                    <Route path="/shops" element={<Shops />} />
-                    <Route path="/shops/:shopId" element={<ShopDetail />} />
+                    <Route path="/stores" element={<Stores />} />
+                    <Route path="/stores/:storeId" element={<StoreDetail />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/my-rentals" element={<MyRentals />} />
                     <Route path="/login" element={<Login />} />

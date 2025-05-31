@@ -9,7 +9,7 @@ export const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">StyleShare</h3>
             <p className="text-fashion-muted">
-              Rent designer clothes from multiple shops at affordable prices.
+              Rent designer clothes from multiple stores at affordable prices.
             </p>
           </div>
           
@@ -22,8 +22,8 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/shops" className="text-fashion-muted hover:text-fashion-accent transition">
-                  Shops
+                <Link to="/stores" className="text-fashion-muted hover:text-fashion-accent transition">
+                  Stores
                 </Link>
               </li>
               <li>

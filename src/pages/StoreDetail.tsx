@@ -3,28 +3,41 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/product/ProductCard";
-import { getShopById, getProductsByShop } from "@/data/mockData";
-import { Product, Shop } from "@/lib/types";
+import { Product, Store } from "@/lib/types";
+import ApiConstants from "@/lib/api";
+import { axiosInstance } from "@/lib/axiosInstance";
 
 
-const ShopDetail = () => {
-  const { shopId } = useParams<{ shopId: string }>();
-  const [shop, setShop] = useState<Shop | null>(null);
+const StoreDetail = () => {
+  const { storeId } = useParams<{ storeId: string }>();
+  const [store, setStore] = useState<Store | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    if (shopId) {
-      const foundShop = getShopById(shopId);
-      
-      if (foundShop) {
-        setShop(foundShop);
-        setProducts(getProductsByShop(foundShop.id));
+    const fetchData = async () => {
+      try {
+        const storeResponse = await axiosInstance.get(ApiConstants.GET_STORE_BY_ID(storeId || ""));
+        const store = {
+          ...storeResponse.data.storeInfo,
+          id: storeResponse.data._id,
+        };
+        setStore(store);
+
+        const productsResponse = await axiosInstance.get(ApiConstants.GET_PRODUCTS_OF_STORE(storeId || ""));
+        const products = productsResponse.data;
+        console.log("Products from store:", products);
+        console.log("Store details:", store);
+        setProducts(products);
+      } catch (error) {
+        console.error("Error fetching store details:", error);
+        setStore(null);
       }
-    }
-    
+    };
+
+    fetchData();
     setLoading(false);
-  }, [shopId]);
+  }, [storeId]);
 
   if (loading) {
     return (
@@ -39,17 +52,17 @@ const ShopDetail = () => {
     );
   }
 
-  if (!shop) {
+  if (!store) {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-12 text-center">
-          <h1 className="text-2xl font-bold text-fashion-DEFAULT mb-4">Shop Not Found</h1>
-          <p className="text-fashion-muted mb-8">The shop you're looking for doesn't exist or has been removed.</p>
-          <Link 
-            to="/shops"
+          <h1 className="text-2xl font-bold text-fashion-DEFAULT mb-4">Store Not Found</h1>
+          <p className="text-fashion-muted mb-8">The store you're looking for doesn't exist or has been removed.</p>
+          <Link
+            to="/stores"
             className="px-6 py-2 bg-fashion-accent text-white rounded-lg hover:bg-fashion-accent/90 transition"
           >
-            Browse All Shops
+            Browse All Stores
           </Link>
         </div>
       </Layout>
@@ -59,33 +72,33 @@ const ShopDetail = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        {/* Shop Info */}
+        {/* Store Info */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
             <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0 border-2 border-fashion-light">
               <img 
-                src={shop.logoUrl} 
-                alt={shop.name} 
+                src={store.logoUrl} 
+                alt={store.storeName} 
                 className="w-full h-full object-cover"
               />
             </div>
             
             <div>
-              <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-2">{shop.name}</h1>
-              <p className="text-fashion-muted">{shop.description}</p>
-              
-              {shop.featured && (
+              <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-2">{store.storeName}</h1>
+              <p className="text-fashion-muted">{store.description}</p>
+
+              {store.featured && (
                 <span className="mt-3 inline-block bg-dashboard-light-purple text-fashion-accent px-3 py-1 rounded-full text-xs font-medium">
-                  Featured Shop
+                  Featured Store
                 </span>
               )}
             </div>
           </div>
         </div>
-        
-        {/* Shop Products */}
-        <h2 className="text-2xl font-bold text-fashion-DEFAULT mb-6">Products from {shop.name}</h2>
-        
+
+        {/* Store Products */}
+        <h2 className="text-2xl font-bold text-fashion-DEFAULT mb-6">Products from {store.storeName}</h2>
+
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map(product => (
@@ -96,13 +109,13 @@ const ShopDetail = () => {
           <div className="text-center py-12 bg-white rounded-lg shadow-md">
             <h3 className="text-xl font-medium mb-2">No products available</h3>
             <p className="text-fashion-muted">
-              This shop doesn't have any products available for rent at the moment.
+              This store doesn't have any products available for rent at the moment.
             </p>
-            <Link 
-              to="/shops"
+            <Link
+              to="/stores"
               className="mt-4 inline-block px-6 py-2 bg-fashion-accent text-white rounded-lg hover:bg-fashion-accent/90 transition"
             >
-              Browse Other Shops
+              Browse Other Stores
             </Link>
           </div>
         )}
@@ -111,4 +124,4 @@ const ShopDetail = () => {
   );
 };
 
-export default ShopDetail;
+export default StoreDetail;

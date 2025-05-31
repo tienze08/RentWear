@@ -1,32 +1,42 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { getProductById, getShopById } from "@/data/mockData";
-import { Product, Shop } from "@/types";
 import { useCart } from "@/components/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
+import { Store, Product } from "@/lib/types";
+import { axiosInstance } from "@/lib/axiosInstance";
+import ApiConstants from "@/lib/api";
 
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
-  const [shop, setShop] = useState<Shop | null>(null);
+  const [store, setStore] = useState<Store | null>(null);
   const [loading, setLoading] = useState(true);
   const [rentalDays, setRentalDays] = useState(3);
   const { addToCart, isInCart } = useCart();
 
   useEffect(() => {
-    if (productId) {
-      const foundProduct = getProductById(productId);
-
-      if (foundProduct) {
-        setProduct(foundProduct);
-        const foundShop = getShopById(foundProduct.shopId);
-        setShop(foundShop || null);
+    const fetchProduct = async () => {
+      try {
+        const response = await axiosInstance.get(ApiConstants.GET_PRODUCT_BY_ID(productId || ""));
+        if (response.status !== 200) {
+          throw new Error("Product not found");
+        }
+        const data: Product = response.data;
+        setProduct(data);
+        if (data.storeId) {
+          const storeResponse = await axiosInstance.get(ApiConstants.GET_STORE_BY_ID(data.storeId));
+          const storeData: Store = storeResponse.data;
+          setStore(storeData);
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error);
       }
-    }
+    };
 
+    fetchProduct();
     setLoading(false);
   }, [productId]);
 
@@ -79,7 +89,7 @@ const ProductDetail = () => {
           <div className="lg:w-1/2">
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
               <img
-                src={product.imageUrl}
+                src={product.images[0]}
                 alt={product.name}
                 className="w-full h-auto object-cover aspect-square"
               />
@@ -92,18 +102,18 @@ const ProductDetail = () => {
               {product.name}
             </h1>
 
-            {shop && (
+            {store && (
               <div className="mb-4">
                 <Link
-                  to={`/shops/${shop.id}`}
+                  to={`/stores/${store.id}`}
                   className="text-fashion-accent hover:text-fashion-accent/80 flex items-center gap-2"
                 >
                   <img
-                    src={shop.logoUrl}
-                    alt={shop.name}
+                    src={store.logoUrl}
+                    alt={store.storeName}
                     className="w-6 h-6 rounded-full object-cover"
                   />
-                  <span>{shop.name}</span>
+                  <span>{store.storeName}</span>
                 </Link>
               </div>
             )}

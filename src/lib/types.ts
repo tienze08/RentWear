@@ -21,13 +21,13 @@ export interface Product {
   description: string;
   rentalPrice: number;
   images: string[];
-  shopId: string;
+  storeId: string;
   category: string;
   size: string;
   available: boolean;
 }
 
-export interface Shop {
+export interface Store {
   id: string;
   storeName: string;
   description: string;

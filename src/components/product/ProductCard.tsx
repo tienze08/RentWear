@@ -52,7 +52,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           onClick={(e) => {
             e.preventDefault();
             if (!inCart) {
-              addToCart(product, 3); // Default to 3 days rental
+              addToCart(product, 3); 
             }
           }}
           disabled={!user} 

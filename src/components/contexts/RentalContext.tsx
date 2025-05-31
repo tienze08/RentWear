@@ -1,11 +1,13 @@
 
+import ApiConstants from "@/lib/api";
+import { axiosInstance } from "@/lib/axiosInstance";
 import type { Rental } from "@/lib/types";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 
 interface RentalContextType {
   rentals: Rental[];
-  addRental: (rental: Rental) => void;
+  createRental: (rental: Rental) => void;
   cancelRental: (rentalId: string) => void;
   getRentalsByStatus: (status: Rental['status']) => Rental[];
 }
@@ -14,27 +16,51 @@ const RentalContext = createContext<RentalContextType | undefined>(undefined);
 
 export const RentalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [rentals, setRentals] = useState<Rental[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // Load rentals from localStorage on mount
-  useEffect(() => {
-    const savedRentals = localStorage.getItem("rentals");
-    if (savedRentals) {
-      try {
-        setRentals(JSON.parse(savedRentals));
-      } catch (e) {
-        console.error("Failed to parse rentals from localStorage", e);
-      }
+  const fetchMyRentals = async () => {
+    setLoading(true);
+    try {
+      const res = await axiosInstance.get(ApiConstants.GET_USER_RENTALS);
+      setRentals(res.data);
+      console.log("Rentals : ", rentals)
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  };
 
   // Save rentals to localStorage when it changes
   useEffect(() => {
-    localStorage.setItem("rentals", JSON.stringify(rentals));
+    fetchMyRentals();
   }, [rentals]);
 
-  const addRental = (rental: Rental) => {
-    setRentals(prev => [...prev, rental]);
+  const createRental = async (rental : Rental) => {
+    setLoading(true);
+    try {
+      const res = await axiosInstance.post(ApiConstants.RENTALS, rental);
+      // Sau khi tạo thành công, cập nhật danh sách
+      setRentals((prev) => [...prev, res.data.rental]);
+      return res.data;
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // // Cập nhật trạng thái đơn thuê
+  // const updateRentalStatus = async (rentalId, status) => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await axiosInstance.patch(`/rentals/${rentalId}/status`, { status });
+  //     setRentals((prev) =>
+  //       prev.map((r) => (r._id === rentalId ? { ...r, status: res.data.status } : r))
+  //     );
+  //     return res.data;
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
 
   const cancelRental = (rentalId: string) => {
     setRentals(prev => prev.map(rental => 
@@ -51,7 +77,7 @@ export const RentalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   return (
     <RentalContext.Provider value={{ 
       rentals, 
-      addRental, 
+      createRental, 
       cancelRental, 
       getRentalsByStatus,
     }}>

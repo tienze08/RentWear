@@ -60,10 +60,10 @@ export const Navbar = () => {
               Home
             </Link>
             <Link
-              to="/shops"
+              to="/stores"
               className="text-fashion-DEFAULT hover:text-fashion-accent transition"
             >
-              Shops
+              Stores
             </Link>
             <Link
               to="/products"
@@ -224,11 +224,11 @@ export const Navbar = () => {
               </li>
               <li>
                 <Link
-                  to="/shops"
+                  to="/stores"
                   className="block text-fashion-DEFAULT hover:text-fashion-accent"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Shops
+                  Stores
                 </Link>
               </li>
               <li>
