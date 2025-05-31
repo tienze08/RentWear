@@ -59,6 +59,7 @@
     --dashboard-light-red: #FEE2E2;
     --dashboard-orange: #F97316;
     --dashboard-light-orange: #FFEDD5;
+    --dashboard-dark: #757575;
   }
 
   .dark {
@@ -173,6 +174,7 @@
   /* Optional border utilities */
   .border-dashboard-red { border-color: var(--dashboard-red); }
   .border-dashboard-green { border-color: var(--dashboard-green); }
+  .border-fashion-accent { border-color: hsl(var(--fashion-accent)); }
 
 
   .bg-fashion { background-color: hsl(var(--fashion)); }
