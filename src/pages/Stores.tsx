@@ -18,10 +18,9 @@ const Stores = () => {
         const rawStores = response.data;
         const stores = rawStores.map((item: any) => ({
           ...item.storeInfo,
-          id: item._id,
+          _id: item._id,
         }));
         setStores(stores);
-        console.log("Fetched stores:", stores);
       } catch (error) {
         console.error("Error fetching stores:", error);
       }
@@ -64,7 +63,7 @@ const Stores = () => {
         {filteredStores.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredStores.map((store) => (
-              <StoreCard key={store.id} store={store} />
+              <StoreCard key={store._id} store={store} />
             ))}
           </div>
         ) : (

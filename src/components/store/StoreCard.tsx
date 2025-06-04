@@ -10,7 +10,7 @@ interface StoreCardProps {
 export const StoreCard = ({ store }: StoreCardProps) => {
   return (
     <Link 
-      to={`/stores/${store.id}`}
+      to={`/stores/${store._id}`}
       className="block bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
     >
       <div className="p-6 flex flex-col items-center">

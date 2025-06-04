@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { useRentals } from "@/components/contexts/RentalContext";
+import { useRental } from "@/components/contexts/RentalContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -10,16 +10,18 @@ import { useToast } from "@/hooks/use-toast";
 import { Rental } from "@/lib/types";
 
 const MyRentals = () => {
-  const { rentals, cancelRental } = useRentals();
+  const { rentals, cancelRental } = useRental();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("active");
 
-  const activeRentals = rentals.filter((rental) => rental.status === "active");
+  const activeRentals = rentals.filter(
+    (rental) => rental.status === "APPROVED"
+  );
   const completedRentals = rentals.filter(
-    (rental) => rental.status === "completed"
+    (rental) => rental.status === "RETURNED"
   );
   const cancelledRentals = rentals.filter(
-    (rental) => rental.status === "cancelled"
+    (rental) => rental.status === "CANCELED"
   );
 
   const handleCancelRental = (rentalId: string) => {
@@ -34,7 +36,7 @@ const MyRentals = () => {
     <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col md:flex-row">
       <div className="w-full md:w-1/3 h-48 md:h-auto">
         <img
-          src={rental.product.imageUrl}
+          src={rental.product.images[0]}
           alt={rental.product.name}
           className="w-full h-full object-cover"
         />
@@ -44,7 +46,7 @@ const MyRentals = () => {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between">
           <div>
             <Link
-              to={`/products/${rental.product.id}`}
+              to={`/products/${rental.product._id}`}
               className="text-xl font-semibold text-fashion-DEFAULT hover:text-fashion-accent"
             >
               {rental.product.name}
@@ -55,29 +57,30 @@ const MyRentals = () => {
           </div>
 
           <div className="mt-4 md:mt-0 md:ml-4 flex items-center px-3 py-1 rounded-full bg-fashion-light text-sm font-medium">
-            {rental.status === "active" && "Active"}
-            {rental.status === "completed" && "Completed"}
-            {rental.status === "cancelled" && "Cancelled"}
+            {rental.status === "APPROVED" && "Active"}
+            {rental.status === "RETURNED" && "Completed"}
+            {rental.status === "CANCELED" && "Cancelled"}
           </div>
         </div>
 
         <div className="mt-4 flex items-center text-fashion-muted">
           <CalendarDays className="h-4 w-4 mr-2" />
           <span>
-            {rental.startDate} to {rental.endDate}
+            {new Date(rental.rentalStart).toLocaleDateString()} to{" "}
+            {new Date(rental.rentalEnd).toLocaleDateString()}
           </span>
         </div>
 
         <div className="mt-2 font-medium">
-          Total: ${rental.totalPrice.toFixed(2)}
+          Total: {rental.totalPrice.toLocaleString()} VNĐ
         </div>
 
-        {rental.status === "active" && (
+        {rental.status === "APPROVED" && (
           <div className="mt-4">
             <Button
               variant="outline"
               className="text-red-500 border-red-500 hover:bg-red-50"
-              onClick={() => handleCancelRental(rental.id)}
+              onClick={() => handleCancelRental(rental._id)}
             >
               Cancel Rental
             </Button>
@@ -120,7 +123,7 @@ const MyRentals = () => {
             {activeRentals.length > 0 ? (
               <div className="space-y-6">
                 {activeRentals.map((rental) => (
-                  <RentalCard key={rental.id} rental={rental} />
+                  <RentalCard key={rental._id} rental={rental} />
                 ))}
               </div>
             ) : (
@@ -145,7 +148,7 @@ const MyRentals = () => {
             {completedRentals.length > 0 ? (
               <div className="space-y-6">
                 {completedRentals.map((rental) => (
-                  <RentalCard key={rental.id} rental={rental} />
+                  <RentalCard key={rental._id} rental={rental} />
                 ))}
               </div>
             ) : (
@@ -170,7 +173,7 @@ const MyRentals = () => {
             {cancelledRentals.length > 0 ? (
               <div className="space-y-6">
                 {cancelledRentals.map((rental) => (
-                  <RentalCard key={rental.id} rental={rental} />
+                  <RentalCard key={rental._id} rental={rental} />
                 ))}
               </div>
             ) : (

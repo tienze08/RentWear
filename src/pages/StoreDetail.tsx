@@ -20,14 +20,12 @@ const StoreDetail = () => {
         const storeResponse = await axiosInstance.get(ApiConstants.GET_STORE_BY_ID(storeId || ""));
         const store = {
           ...storeResponse.data.storeInfo,
-          id: storeResponse.data._id,
+          _id: storeResponse.data._id,
         };
         setStore(store);
 
         const productsResponse = await axiosInstance.get(ApiConstants.GET_PRODUCTS_OF_STORE(storeId || ""));
         const products = productsResponse.data;
-        console.log("Products from store:", products);
-        console.log("Store details:", store);
         setProducts(products);
       } catch (error) {
         console.error("Error fetching store details:", error);
@@ -102,7 +100,7 @@ const StoreDetail = () => {
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product._id} product={product} />
             ))}
           </div>
         ) : (

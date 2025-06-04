@@ -1,46 +1,46 @@
-
 import ApiConstants from "@/lib/api";
 import { axiosInstance } from "@/lib/axiosInstance";
-import type { Rental } from "@/lib/types";
+import type { Rental, RentalFormData } from "@/lib/types";
 import React, { createContext, useContext, useState, useEffect } from "react";
-
 
 interface RentalContextType {
   rentals: Rental[];
-  createRental: (rental: Rental) => void;
+  createRental: (rental: RentalFormData) => void;
   cancelRental: (rentalId: string) => void;
-  getRentalsByStatus: (status: Rental['status']) => Rental[];
+  getRentalsByStatus: (status: Rental["status"]) => Rental[];
+  totalItems: number;
+  loading: boolean;
+  fetchMyRentals: () => Promise<void>;
 }
 
 const RentalContext = createContext<RentalContextType | undefined>(undefined);
 
-export const RentalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const RentalProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Load rentals from localStorage on mount
+  useEffect(() => {
+    fetchMyRentals();
+  }, []);
+
   const fetchMyRentals = async () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get(ApiConstants.GET_USER_RENTALS);
       setRentals(res.data);
-      console.log("Rentals : ", rentals)
     } finally {
       setLoading(false);
     }
   };
-
-  // Save rentals to localStorage when it changes
-  useEffect(() => {
-    fetchMyRentals();
-  }, [rentals]);
-
-  const createRental = async (rental : Rental) => {
+  const createRental = async (rental: RentalFormData) => {
     setLoading(true);
     try {
       const res = await axiosInstance.post(ApiConstants.RENTALS, rental);
       // Sau khi tạo thành công, cập nhật danh sách
       setRentals((prev) => [...prev, res.data.rental]);
+      console.log("Created Rental: ", res.data.rental);
       return res.data;
     } finally {
       setLoading(false);
@@ -61,32 +61,38 @@ export const RentalProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   //   }
   // };
 
-
   const cancelRental = (rentalId: string) => {
-    setRentals(prev => prev.map(rental => 
-      rental.id === rentalId 
-        ? { ...rental, status: 'cancelled' as const } 
-        : rental
-    ));
+    console.log("Cancelling rental with ID:", rentalId);
+    console.log("Current rentals before cancellation:", rentals);
+    setRentals((prev) => prev.filter((rental) => rental._id !== rentalId));
+    // Optionally, you can also make an API call to cancel the rental
+    axiosInstance.delete(`${ApiConstants.RENTALS}/${rentalId}`);
   };
 
-  const getRentalsByStatus = (status: Rental['status']) => {
-    return rentals.filter(rental => rental.status === status);
+  const getRentalsByStatus = (status: Rental["status"]) => {
+    return rentals.filter((rental) => rental.status === status);
   };
+
+  const totalItems = rentals.length;
 
   return (
-    <RentalContext.Provider value={{ 
-      rentals, 
-      createRental, 
-      cancelRental, 
-      getRentalsByStatus,
-    }}>
+    <RentalContext.Provider
+      value={{
+        rentals,
+        createRental,
+        cancelRental,
+        getRentalsByStatus,
+        totalItems,
+        loading,
+        fetchMyRentals,
+      }}
+    >
       {children}
     </RentalContext.Provider>
   );
 };
 
-export const useRentals = () => {
+export const useRental = () => {
   const context = useContext(RentalContext);
   if (context === undefined) {
     throw new Error("useRentals must be used within a RentalProvider");

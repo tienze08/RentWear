@@ -16,7 +16,7 @@ const Home = () => {
       try {
         // Fetch all products
         const productResponse = await axiosInstance.get(ApiConstants.LIST_PRODUCTS);
-        const products: Product[] = productResponse.data.map((item: any) => ({ id: item._id, ...item }));
+        const products: Product[] = productResponse.data;
         // Fetch all stores
         const storeResponse = await axiosInstance.get(ApiConstants.STORES);
         const rawStores = storeResponse.data;
@@ -24,7 +24,7 @@ const Home = () => {
         const stores: Store[] = rawStores.map((item : {_id : string,storeInfo : Store}) => {
           return {
             ...item.storeInfo,
-            id: item._id,   
+            _id: item._id,   
           };
         });
 
@@ -93,7 +93,7 @@ const Home = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product._id} product={product} />
             ))}
           </div>
         </div>
@@ -159,7 +159,7 @@ const Home = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredStores.map((store) => (
-              <StoreCard key={store.id} store={store} />
+              <StoreCard key={store._id} store={store} />
             ))}
           </div>
         </div>

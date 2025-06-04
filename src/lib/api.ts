@@ -13,7 +13,7 @@ const ApiConstants = {
   GET_PRODUCT_BY_ID: (productId: string) => `${BASE_URL}/products/${productId}`,
   STORES : `${BASE_URL}/stores`,
   GET_STORE_BY_ID: (storeId: string) => `${BASE_URL}/stores/${storeId}`,
-  GET_USER_RENTALS: `${BASE_URL}/rentals/my`,
+  GET_USER_RENTALS: `${BASE_URL}/rentals/user/me`,
   RENTALS : `${BASE_URL}/rentals`,
 } as const;
 

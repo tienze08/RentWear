@@ -8,7 +8,6 @@ import {
   LogOut,
   MessageCircle,
 } from "lucide-react";
-import { useCart } from "@/components/contexts/CartContext";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,14 +18,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRental } from "../contexts/RentalContext";
 
 export const Navbar = () => {
-  const { totalItems } = useCart();
+  const { totalItems } = useRental();
   const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-
-  console.log(user);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -71,6 +69,16 @@ export const Navbar = () => {
             >
               Products
             </Link>
+
+            {user?.role === "STORE" && (
+              <Link
+                to="/my-store"
+                className="text-fashion-DEFAULT hover:text-fashion-accent transition"
+              >
+                My Store
+              </Link>
+            )}
+
             {isAuthenticated && (
               <>
                 <Link
@@ -106,23 +114,20 @@ export const Navbar = () => {
                     variant="ghost"
                     size="icon"
                     className="rounded-full focus-visible:ring-2 focus-visible:ring-fashion-accent transition hover:cursor-pointer"
-                >
-                  <Avatar className="h-8 w-8 border border-gray-300">
+                  >
+                    <Avatar className="h-8 w-8 border border-gray-300">
                       {user?.avatar ? (
-                        <AvatarImage
-                          src={user.avatar}
-                          alt={user.username}
-                        />
+                        <AvatarImage src={user.avatar} alt={user.username} />
                       ) : (
                         <AvatarFallback className="bg-fashion-accent text-white text-sm">
                           {getInitials(user?.username || "")}
                         </AvatarFallback>
                       )}
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
 
-              <DropdownMenuContent
+                <DropdownMenuContent
                   align="end"
                   className="w-52 mt-2 rounded-xl border border-gray-200 bg-white shadow-lg p-1"
                 >
@@ -161,7 +166,7 @@ export const Navbar = () => {
                   {user?.role === "STORE" && (
                     <DropdownMenuItem asChild>
                       <Link
-                        to="/my-rentals"
+                        to="/my-store"
                         className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-400 hover:text-white transition-colors w-full cursor-pointer"
                       >
                         <ShoppingBag className="w-4 h-4" />
@@ -239,6 +244,19 @@ export const Navbar = () => {
                   Products
                 </Link>
               </li>
+
+              {user?.role === "STORE" && (
+                <li>
+                  <Link
+                    to="/my-store"
+                    className="block text-fashion-DEFAULT hover:text-fashion-accent"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    My Store
+                  </Link>
+                </li>
+              )}
+
               {isAuthenticated && (
                 <>
                   <li>

@@ -17,8 +17,10 @@ import { CartProvider } from "./components/contexts/CartContext";
 import { RentalProvider } from "./components/contexts/RentalContext";
 import { AuthProvider } from "./components/contexts/AuthContext";
 import { UserProvider } from "./components/contexts/UserContext";
-import { SocketProvider } from "./components/contexts/SocketContext";
 import Settings from "./pages/Setting";
+import MyStore from "./pages/MyStore";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +48,9 @@ const App = () => (
                     <Route path="/register" element={<Register />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/chat" element={<Chat />} />
+                    <Route path="/my-store" element={<MyStore />} />
+                    <Route path="/payment-success" element={<PaymentSuccess />} />
+                    <Route path="/payment-cancel" element={<PaymentCancel />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </RentalProvider>

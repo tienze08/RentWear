@@ -29,13 +29,7 @@ const Products = () => {
     const fetchProducts = async () => {
     try {
         const response = await axiosInstance.get(ApiConstants.LIST_PRODUCTS);
-        const rawProducts = response.data;
-        const products = rawProducts.map(item => (
-          {
-            ...item,
-            id: item._id,
-          }
-        ));
+        const products = response.data;
         setProducts(products);
         console.log("Fetched products:", products);
       } catch (error) {
@@ -173,7 +167,7 @@ const Products = () => {
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <ProductCard key={product._id} product={product} />
                   ))}
                 </div>
               </>

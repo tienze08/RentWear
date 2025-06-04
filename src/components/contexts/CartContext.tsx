@@ -1,6 +1,7 @@
 
 import type { Product } from "@/lib/types";
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { axiosInstance } from "@/lib/axiosInstance";
 
 
 interface CartContextType {
@@ -18,28 +19,34 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<Array<{ product: Product; rentalDays: number }>>([]);
 
-  // Load cart from localStorage on mount
-  useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      try {
-        setItems(JSON.parse(savedCart));
-      } catch (e) {
-        console.error("Failed to parse cart from localStorage", e);
-      }
-    }
-  }, []);
+  // Fetch cart items 
+  // useEffect(() => {
+  //   const fetchRentalsCart = async () => {
+  //     try {
+  //       const response = await axiosInstance.get("/rentals/user/me");
+  //       const rentals = response.data;
+  //       if (Array.isArray(rentals)) {
+  //         const cartItems = rentals.map((rental: any) => ({
+  //           product: rental.productId,
+  //           rentalDays: rental.rentalEnd - rental.rentalStart,
+  //         }));
+  //         setItems(cartItems);
+  //       } else {
+  //         console.error("Invalid rentals data format:", rentals);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching rentals cart:", error);
+  //     }
+  //   };
 
-  // Save cart to localStorage when it changes
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(items));
-  }, [items]);
+  //   fetchRentalsCart();
+  // }, []);
 
   const addToCart = (product: Product, rentalDays: number) => {
     setItems((prev) => {
       // Check if product already exists in cart
-      const existingIndex = prev.findIndex((item) => item.product.id === product.id);
-      
+      const existingIndex = prev.findIndex((item) => item.product._id === product._id);
+
       if (existingIndex >= 0) {
         // Replace the existing item with updated rental days
         const updated = [...prev];
@@ -53,7 +60,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const removeFromCart = (productId: string) => {
-    setItems(prev => prev.filter(item => item.product.id !== productId));
+    setItems(prev => prev.filter(item => item.product._id !== productId));
   };
 
   const clearCart = () => {
@@ -61,7 +68,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const isInCart = (productId: string) => {
-    return items.some(item => item.product.id === productId);
+    return items.some(item => item.product._id === productId);
   };
 
   const totalItems = items.length;

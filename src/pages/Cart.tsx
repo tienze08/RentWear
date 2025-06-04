@@ -1,64 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { useCart } from "@/components/contexts/CartContext";
-import { useRentals } from "@/components/contexts/RentalContext";
+import { useRental } from "@/components/contexts/RentalContext";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-
 import { useToast } from "@/hooks/use-toast";
 import { Rental } from "@/lib/types";
+import { axiosInstance } from "@/lib/axiosInstance";
 
 const Cart = () => {
-  const { items, removeFromCart, totalPrice, clearCart } = useCart();
-  const { addRental } = useRentals();
+  const { rentals, cancelRental, fetchMyRentals } = useRental();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedRentalIds, setSelectedRentalIds] = useState<string[]>([]);
 
-  const handleCheckout = () => {
-    if (items.length === 0) {
+  useEffect(() => {
+    fetchMyRentals();
+  }, []);
+
+  const rentalDays = (rental: Rental) => {
+    const startDate = new Date(rental.rentalStart);
+    const endDate = new Date(rental.rentalEnd);
+    const days =
+      Math.ceil(
+        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+      ) + 1;
+    return days;
+  };
+
+  const toggleRentalSelection = (id: string) => {
+    setSelectedRentalIds((prev) =>
+      prev.includes(id) ? prev.filter((rid) => rid !== id) : [...prev, id]
+    );
+  };
+
+  const selectedRentals = rentals.filter((r) =>
+    selectedRentalIds.includes(r._id)
+  );
+  const totalPrice = selectedRentals.reduce((sum, r) => sum + r.totalPrice, 0);
+
+  console.log("Rentals:", rentals);
+
+  const handleCheckout = async () => {
+    if (selectedRentalIds.length === 0) {
       toast({
-        title: "Cart is empty",
-        description: "Add some items to your cart before checking out.",
+        title: "No items selected",
+        description: "Please select rentals to proceed.",
         variant: "destructive",
       });
       return;
     }
-
     setIsProcessing(true);
 
-    // Simulate checkout process
-    setTimeout(() => {
-      // Create rentals from cart items
-      items.forEach((item) => {
-        const today = new Date();
-        const endDate = new Date(today);
-        endDate.setDate(today.getDate() + item.rentalDays);
-
-        const rental: Rental = {
-          id: `rental-${Date.now()}-${item.product.id}`,
-          productId: item.product.id,
-          product: item.product,
-          startDate: today.toISOString().split("T")[0],
-          endDate: endDate.toISOString().split("T")[0],
-          totalPrice: item.product.rentalPrice * item.rentalDays,
-          status: "active",
-        };
-
-        addRental(rental);
+    try {
+      const res = await axiosInstance.post("/payments/checkout", {
+        rentalIds: selectedRentalIds,
       });
-
-      // Clear cart
-      clearCart();
-
-      // Show success message
-      toast({
-        title: "Checkout successful!",
-        description: "Your items have been rented successfully.",
-      });
-
+      window.location.href = res.data.paymentUrl;
+    } catch (error) {
+      console.log("Checkout error:", error);
+      toast({ title: "Checkout error", variant: "destructive" });
+    } finally {
       setIsProcessing(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -68,64 +72,82 @@ const Cart = () => {
           Your Cart
         </h1>
 
-        {items.length > 0 ? (
+        {rentals.length > 0 ? (
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Cart Items */}
             <div className="lg:w-2/3">
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-xl font-semibold text-fashion-DEFAULT">
-                    Cart Items ({items.length})
+                    Cart Items ({rentals.length})
                   </h2>
                 </div>
 
                 <ul className="divide-y divide-gray-200">
-                  {items.map(({ product, rentalDays }) => (
-                    <li
-                      key={product.id}
-                      className="p-6 flex flex-col sm:flex-row sm:items-center"
-                    >
-                      <div className="flex-shrink-0 w-full sm:w-24 h-24 mb-4 sm:mb-0 sm:mr-6 bg-gray-100 rounded-md overflow-hidden">
-                        <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-
-                      <div className="flex-grow">
-                        <Link
-                          to={`/products/${product.id}`}
-                          className="text-lg font-medium text-fashion-DEFAULT hover:text-fashion-accent"
-                        >
-                          {product.name}
-                        </Link>
-                        <p className="text-fashion-muted text-sm mt-1">
-                          Size: {product.size}
-                        </p>
-                        <div className="mt-2 flex items-center">
-                          <span className="text-fashion-muted text-sm">
-                            Rental Period:
-                          </span>
-                          <span className="ml-1 font-medium">
-                            {rentalDays} days
-                          </span>
-                        </div>
-                        <div className="mt-1 font-medium">
-                          ${product.rentalPrice} × {rentalDays} = $
-                          {product.rentalPrice * rentalDays}
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => removeFromCart(product.id)}
-                        className="mt-4 sm:mt-0 sm:ml-4 text-fashion-muted hover:text-red-500 transition"
-                        aria-label="Remove item"
+                  {rentals
+                    .filter((r) => r.productId && r.productId.images)
+                    .map((rental) => (
+                      <li
+                        key={rental._id}
+                        className="p-6 flex flex-col sm:flex-row sm:items-center"
                       >
-                        <X className="h-5 w-5" />
-                      </button>
-                    </li>
-                  ))}
+                        <div className="flex sm:items-center w-full">
+                          <label className="flex items-center gap-3 w-full cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedRentalIds.includes(rental._id)}
+                              onChange={() => toggleRentalSelection(rental._id)}
+                              className="form-checkbox h-5 w-5 text-fashion-accent border-gray-300 rounded"
+                            />
+
+                            <div className="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-md overflow-hidden">
+                              <img
+                                src={
+                                  rental.productId && rental.productId.images
+                                    ? rental.productId.images[0]
+                                    : ""
+                                }
+                                alt={
+                                  rental.productId && rental.productId.name
+                                    ? rental.productId.name
+                                    : ""
+                                }
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+
+                            <div className="flex-grow ml-4">
+                              <Link
+                                to={`/products/${rental.productId?._id || ""}`}
+                                className="text-lg font-medium text-fashion-DEFAULT hover:text-fashion-accent"
+                              >
+                                {rental.productId?.name || "Unknown"}
+                              </Link>
+                              <p className="text-fashion-muted text-sm mt-1">
+                                Size: {rental.productId?.size || "N/A"}
+                              </p>
+                              <div className="mt-1 text-sm text-fashion-muted">
+                                Rental Period:{" "}
+                                <span className="font-medium">
+                                  {rentalDays(rental)} days
+                                </span>
+                              </div>
+                              <div className="mt-1 font-medium">
+                                {rental.totalPrice.toFixed(2)} VNĐ
+                              </div>
+                            </div>
+                          </label>
+
+                          <button
+                            onClick={() => cancelRental(rental._id)}
+                            className="ml-4 text-fashion-muted hover:text-red-500 transition"
+                            aria-label="Remove item"
+                          >
+                            <X className="h-5 w-5" />
+                          </button>
+                        </div>
+                      </li>
+                    ))}
                 </ul>
               </div>
             </div>
@@ -141,24 +163,26 @@ const Cart = () => {
                   <div className="flex justify-between">
                     <span className="text-fashion-muted">Subtotal</span>
                     <span className="font-medium">
-                      ${totalPrice.toFixed(2)}
+                      {totalPrice.toFixed(2)} VNĐ
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-fashion-muted">Processing Fee</span>
-                    <span className="font-medium">$5.00</span>
+                    <span className="font-medium">
+                      {(totalPrice * 0.1).toFixed(2)} VNĐ
+                    </span>
                   </div>
                   <div className="flex justify-between border-t border-gray-200 pt-4">
                     <span className="font-semibold">Total</span>
                     <span className="font-bold">
-                      ${(totalPrice + 5).toFixed(2)}
+                      {(totalPrice * 1.1).toFixed(2)} VNĐ
                     </span>
                   </div>
                 </div>
 
                 <Button
                   onClick={handleCheckout}
-                  disabled={items.length === 0 || isProcessing}
+                  disabled={rentals.length === 0 || isProcessing}
                   className="w-full py-6 text-lg bg-fashion-accent hover:bg-fashion-accent/90"
                 >
                   {isProcessing ? "Processing..." : "Checkout"}
