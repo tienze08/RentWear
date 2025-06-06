@@ -38,8 +38,8 @@ export interface Store {
 export interface Rental {
   _id: string;
   productId: Product;
-  customerId: string;
-  storeId: string;
+  customerId: User;
+  storeId: Store;
   rentalStart: string;
   rentalEnd: string;
   totalPrice: number;

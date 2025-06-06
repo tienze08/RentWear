@@ -2,7 +2,7 @@
 import { User } from "@/lib/types";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { axiosInstance } from "@/lib/axiosInstance";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import ApiConstants from "@/lib/api";
 
 interface AuthContextType {
@@ -38,7 +38,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUser(parsed);
         setIsAuthenticated(true);
         // Gắn header Authorization mặc định
-        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+        axiosInstance.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${accessToken}`;
       } catch (e) {
         console.error("Invalid stored user:", e);
         localStorage.removeItem("user");
@@ -50,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (email: string, password: string) => {
     try {
       // 1. Gọi API login (server sẽ set refreshToken vào cookie)
-      const response = await axiosInstance.post(ApiConstants.LOGIN, {
+      const response = await axios.post(ApiConstants.LOGIN, {
         email,
         password,
       });
@@ -58,7 +60,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const { accessToken } = response.data;
       // 2. Lưu accessToken vào localStorage
       localStorage.setItem("accessToken", accessToken);
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+      axiosInstance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${accessToken}`;
 
       // 3. Lấy thông tin user từ /me
       const userRes = await axiosInstance.get(ApiConstants.GET_CURRENT_USER);
@@ -82,9 +86,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     storeInfo?: { storeName: string; address: string; phone: string }
   ) => {
     try {
-      // 1. Gọi API register (server set refreshToken vào cookie)
       const response = await axiosInstance.post(ApiConstants.REGISTER, {
-        username: name, // chú ý backend nhận `username` (không phải `name`)
+        username: name,
         email,
         password,
         role,
@@ -94,7 +97,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const { accessToken } = response.data;
       // 2. Lưu accessToken
       localStorage.setItem("accessToken", accessToken);
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+      axiosInstance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${accessToken}`;
 
       // 3. Lấy user
       const userRes = await axiosInstance.get(ApiConstants.GET_CURRENT_USER);

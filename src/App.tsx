@@ -31,30 +31,30 @@ const App = () => (
         <AuthProvider>
           <UserProvider>
             {/* <SocketProvider> */}
-              <CartProvider>
-                <RentalProvider>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route
-                      path="/products/:productId"
-                      element={<ProductDetail />}
-                    />
-                    <Route path="/stores" element={<Stores />} />
-                    <Route path="/stores/:storeId" element={<StoreDetail />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/my-rentals" element={<MyRentals />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="/chat" element={<Chat />} />
-                    <Route path="/my-store" element={<MyStore />} />
-                    <Route path="/payment-success" element={<PaymentSuccess />} />
-                    <Route path="/payment-cancel" element={<PaymentCancel />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </RentalProvider>
-              </CartProvider>
+            <CartProvider>
+              <RentalProvider>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route
+                    path="/products/:productId"
+                    element={<ProductDetail />}
+                  />
+                  <Route path="/stores" element={<Stores />} />
+                  <Route path="/stores/:storeId" element={<StoreDetail />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/my-rentals" element={<MyRentals />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/my-store" element={<MyStore />} />
+                  <Route path="/payment-success" element={<PaymentSuccess />} />
+                  <Route path="/payment-cancel" element={<PaymentCancel />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </RentalProvider>
+            </CartProvider>
             {/* </SocketProvider> */}
           </UserProvider>
         </AuthProvider>

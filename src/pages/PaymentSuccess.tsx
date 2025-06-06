@@ -8,13 +8,15 @@ import { axiosInstance } from "@/lib/axiosInstance";
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const paymentId = searchParams.get("paymentId");
-
+  const orderCode = searchParams.get("orderCode");
   useEffect(() => {
     const updatePaymentStatus = async () => {
-      if (paymentId) {
+      console.log("Updating payment status:", paymentId, orderCode);
+      if (paymentId || orderCode) {
         try {
           await axiosInstance.put(`/payments/${paymentId}/status`, {
             status: "COMPLETED",
+            orderCode: orderCode,
           });
         } catch (error) {
           console.error("Failed to update payment status:", error);

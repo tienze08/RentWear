@@ -66,8 +66,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           variant={inCart ? "outline" : "default"}
           className={`w-full ${
             inCart
-              ? "border-fashion-accent text-fashion-accent"
-              : "bg-fashion-accent hover:bg-fashion-accent/90"
+              ? "border-blueberry text-blueberry"
+              : "bg-blueberry hover:bg-blue-950 text-white"
           }`}
           onClick={(e) => {
             e.preventDefault();

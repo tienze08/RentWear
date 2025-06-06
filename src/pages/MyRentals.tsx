@@ -13,7 +13,7 @@ const MyRentals = () => {
   const { rentals, cancelRental } = useRental();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("active");
-
+  
   const activeRentals = rentals.filter(
     (rental) => rental.status === "APPROVED"
   );
@@ -36,8 +36,8 @@ const MyRentals = () => {
     <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col md:flex-row">
       <div className="w-full md:w-1/3 h-48 md:h-auto">
         <img
-          src={rental.product.images[0]}
-          alt={rental.product.name}
+          src={rental.productId.images[0]}
+          alt={rental.productId.name}
           className="w-full h-full object-cover"
         />
       </div>
@@ -46,13 +46,13 @@ const MyRentals = () => {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between">
           <div>
             <Link
-              to={`/products/${rental.product._id}`}
+              to={`/products/${rental.productId._id}`}
               className="text-xl font-semibold text-fashion-DEFAULT hover:text-fashion-accent"
             >
-              {rental.product.name}
+              {rental.productId.name}
             </Link>
             <p className="text-fashion-muted text-sm mt-1">
-              Size: {rental.product.size}
+              Size: {rental.productId.size}
             </p>
           </div>
 
@@ -103,19 +103,19 @@ const MyRentals = () => {
               value="active"
               className="data-[state=active]:bg-blue-400 data-[state=active]:text-white"
             >
-              Active ({activeRentals.length})
+              Active ({activeRentals.filter((r) => r.status === "APPROVED").length})
             </TabsTrigger>
             <TabsTrigger
               value="completed"
               className="data-[state=active]:bg-blue-400 data-[state=active]:text-white"
             >
-              Completed ({completedRentals.length})
+              Completed ({completedRentals.filter((r) => r.status === "RETURNED").length})
             </TabsTrigger>
             <TabsTrigger
               value="cancelled"
               className="data-[state=active]:bg-blue-400 data-[state=active]:text-white"
             >
-              Cancelled ({cancelledRentals.length})
+              Cancelled ({cancelledRentals.filter((r) => r.status === "CANCELED").length})
             </TabsTrigger>
           </TabsList>
 

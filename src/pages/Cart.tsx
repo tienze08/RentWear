@@ -68,7 +68,7 @@ const Cart = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-8">
+        <h1 className="text-3xl font-bold text-blueberry mb-8">
           Your Cart
         </h1>
 
@@ -79,13 +79,18 @@ const Cart = () => {
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-xl font-semibold text-fashion-DEFAULT">
-                    Cart Items ({rentals.length})
+                    Cart Items ({rentals.filter((r) => r.status === "PENDING").length})
                   </h2>
                 </div>
 
                 <ul className="divide-y divide-gray-200">
                   {rentals
-                    .filter((r) => r.productId && r.productId.images)
+                    .filter(
+                      (r) =>
+                        r.productId &&
+                        r.productId.images &&
+                        r.status === "PENDING"
+                    )
                     .map((rental) => (
                       <li
                         key={rental._id}
@@ -183,7 +188,7 @@ const Cart = () => {
                 <Button
                   onClick={handleCheckout}
                   disabled={rentals.length === 0 || isProcessing}
-                  className="w-full py-6 text-lg bg-fashion-accent hover:bg-fashion-accent/90"
+                  className="w-full py-6 text-lg bg-blueberry hover:bg-blue-950 text-white"
                 >
                   {isProcessing ? "Processing..." : "Checkout"}
                 </Button>

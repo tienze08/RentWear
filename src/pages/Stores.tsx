@@ -47,7 +47,7 @@ const Stores = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-8">
+        <h1 className="text-3xl font-bold text-blueberry mb-8">
           Browse Stores
         </h1>
 

@@ -7,7 +7,9 @@ interface StoreCardProps {
   store: Store;
 }
 
+
 export const StoreCard = ({ store }: StoreCardProps) => {
+  console.log("Store",store);
   return (
     <Link 
       to={`/stores/${store._id}`}
