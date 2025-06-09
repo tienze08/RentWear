@@ -9,7 +9,7 @@ import MyRentals from "./pages/MyRentals";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Chat from "./pages/Chat";
+// import Chat from "./pages/Chat";
 import Stores from "./pages/Stores";
 import StoreDetail from "./pages/StoreDetail";
 import { TooltipProvider } from "./components/ui/tooltip";
@@ -50,7 +50,7 @@ const App = () => (
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/settings" element={<Settings />} />
-                  <Route path="/chat" element={<Chat />} />
+                  {/* <Route path="/chat" element={<Chat />} /> */}
                   <Route path="/my-store" element={<MyStore />} />
                   <Route path="/payment-success" element={<PaymentSuccess />} />
                   <Route path="/payment-cancel" element={<PaymentCancel />} />
