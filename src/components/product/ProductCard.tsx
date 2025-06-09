@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/contexts/CartContext";
 import type { Product } from "@/lib/types";
 import { useAuth } from "../contexts/AuthContext";
+import { useRental } from "../contexts/RentalContext";
 
 interface ProductCardProps {
   product: Product;
@@ -11,12 +12,31 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart, isInCart } = useCart();
+  const { createRental } = useRental();
   const { user } = useAuth();
-  const inCart = isInCart(product.id);
+  const inCart = isInCart(product._id);
+
+  const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!user) {
+      alert("Hãy đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      return;
+    }
+    try {
+      await createRental({
+        productId: product._id,
+        rentalDays: 3,
+        userId: user._id,
+      });
+      addToCart(product, 3); // Add to cart with default rental days
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-      <Link to={`/products/${product.id}`}>
+      <Link to={`/products/${product._id}`}>
         <div className="h-64 overflow-hidden">
           <img
             src={product.images[0]}
@@ -46,8 +66,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           variant={inCart ? "outline" : "default"}
           className={`w-full ${
             inCart
-              ? "border-fashion-accent text-fashion-accent"
-              : "bg-fashion-accent hover:bg-fashion-accent/90"
+              ? "border-blueberry text-blueberry"
+              : "bg-blueberry hover:bg-blue-950 text-white"
           }`}
           onClick={(e) => {
             e.preventDefault();

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   ShoppingBag,
   Menu,
@@ -8,7 +8,6 @@ import {
   LogOut,
   MessageCircle,
 } from "lucide-react";
-import { useCart } from "@/components/contexts/CartContext";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,14 +18,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRental } from "../contexts/RentalContext";
 
 export const Navbar = () => {
-  const { totalItems } = useCart();
+  const { totalItems } = useRental();
   const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  console.log(user);
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -46,42 +49,64 @@ export const Navbar = () => {
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="text-fashion-DEFAULT text-2xl font-bold">
+        <div className="flex items-center justify-between ">
+          <Link to="/" className="text-blueberry text-2xl font-bold">
             Fasent
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="text-blueberry hidden md:flex items-center space-x-8 font-semibold">
             <Link
               to="/"
-              className="text-fashion-DEFAULT hover:text-fashion-accent transition"
+              className={`hover:text-strawberry transition ${
+                isActive("/") ? "text-strawberry" : ""
+              }`}
             >
               Home
             </Link>
             <Link
               to="/stores"
-              className="text-fashion-DEFAULT hover:text-fashion-accent transition"
+              className={`hover:text-strawberry transition ${
+                isActive("/stores") ? "text-strawberry" : ""
+              }`}
             >
               Stores
             </Link>
             <Link
               to="/products"
-              className="text-fashion-DEFAULT hover:text-fashion-accent transition"
+              className={`hover:text-strawberry transition ${
+                isActive("/products") ? "text-strawberry" : ""
+              }`}
             >
               Products
             </Link>
-            {isAuthenticated && (
+
+            {user?.role === "STORE" && (
+              <Link
+                to="/my-store"
+                className={`hover:text-strawberry transition ${
+                  isActive("/my-store") ? "text-strawberry" : ""
+                }`}
+              >
+                My Store
+              </Link>
+            )}
+
+            {isAuthenticated && user?.role === "CUSTOMER" && (
               <>
                 <Link
                   to="/my-rentals"
-                  className="text-fashion-DEFAULT hover:text-fashion-accent transition"
+                  className={`hover:text-strawberry transition ${
+                    isActive("/my-rentals") ? "text-strawberry" : ""
+                  }`}
                 >
                   My Rentals
                 </Link>
                 <Link
                   to="/chat"
-                  className="text-fashion-DEFAULT hover:text-fashion-accent transition"
+                  className={`hover:text-strawberry transition ${
+                    isActive("/chat") ? "text-strawberry" : ""
+                  }`}
                 >
                   Chat
                 </Link>
@@ -91,45 +116,44 @@ export const Navbar = () => {
 
           {/* Cart and User Icons */}
           <div className="flex items-center space-x-4">
-            <Link to="/cart" className="relative">
-              <ShoppingBag className="h-6 w-6 text-fashion-DEFAULT" />
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-fashion-accent text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
+            {user?.role === "CUSTOMER" && (
+              <Link to="/cart" className="relative">
+                <ShoppingBag className="h-6 w-6 text-blueberry" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-blueberry text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+            )}
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full focus-visible:ring-2 focus-visible:ring-fashion-accent transition hover:cursor-pointer"
-                >
-                  <Avatar className="h-8 w-8 border border-gray-300">
+                    className="rounded-full focus-visible:ring-2 focus-visible:ring-blueberry transition hover:cursor-pointer"
+                  >
+                    <Avatar className="h-8 w-8 border border-gray-300">
                       {user?.avatar ? (
-                        <AvatarImage
-                          src={user.avatar}
-                          alt={user.username}
-                        />
+                        <AvatarImage src={user.avatar} alt={user.username} />
                       ) : (
-                        <AvatarFallback className="bg-fashion-accent text-white text-sm">
+                        <AvatarFallback className="bg-blueberry text-white text-sm">
                           {getInitials(user?.username || "")}
                         </AvatarFallback>
                       )}
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
 
-              <DropdownMenuContent
+                <DropdownMenuContent
                   align="end"
                   className="w-52 mt-2 rounded-xl border border-gray-200 bg-white shadow-lg p-1"
                 >
                   <DropdownMenuItem asChild>
                     <Link
                       to="/settings"
-                      className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-400 hover:text-white transition-colors w-full cursor-pointer"
+                      className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blueberry hover:bg-blue-100 transition-colors w-full cursor-pointer"
                     >
                       <UserRound className="w-4 h-4" />
                       Settings
@@ -139,7 +163,7 @@ export const Navbar = () => {
                   <DropdownMenuItem asChild>
                     <Link
                       to="/chat"
-                      className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-400 hover:text-white transition-colors w-full cursor-pointer"
+                      className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blueberry hover:bg-blue-100 transition-colors w-full cursor-pointer"
                     >
                       <MessageCircle className="w-4 h-4" />
                       Chat
@@ -150,7 +174,7 @@ export const Navbar = () => {
                     <DropdownMenuItem asChild>
                       <Link
                         to="/my-rentals"
-                        className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-400 hover:text-white transition-colors w-full cursor-pointer"
+                        className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blueberry hover:bg-blue-100 transition-colors w-full cursor-pointer"
                       >
                         <ShoppingBag className="w-4 h-4" />
                         My Rentals
@@ -161,8 +185,8 @@ export const Navbar = () => {
                   {user?.role === "STORE" && (
                     <DropdownMenuItem asChild>
                       <Link
-                        to="/my-rentals"
-                        className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blue-400 hover:text-white transition-colors w-full cursor-pointer"
+                        to="/my-store"
+                        className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-blueberry hover:bg-blue-100 transition-colors w-full cursor-pointer"
                       >
                         <ShoppingBag className="w-4 h-4" />
                         My Store
@@ -186,7 +210,7 @@ export const Navbar = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-sidebar-border"
+                  className="border-sidebar-border bg-blueberry text-white hover:bg-blue-950 hover:cursor-pointer"
                 >
                   Sign In
                 </Button>
@@ -195,7 +219,7 @@ export const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden text-fashion-DEFAULT"
+              className="md:hidden text-blueberry"
               onClick={toggleMenu}
               aria-label="Toggle menu"
             >
@@ -210,67 +234,73 @@ export const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="md:hidden mt-4 pb-4">
-            <ul className="flex flex-col space-y-4">
-              <li>
+          <nav
+            className={`md:hidden ${
+              isMenuOpen ? "block" : "hidden"
+            } absolute top-full left-0 right-0 bg-white border-b border-gray-200 py-4`}
+          >
+            <div className="container mx-auto px-4 space-y-4">
+              <Link
+                to="/"
+                className={`block text-blueberry hover:text-strawberry ${
+                  isActive("/") ? "text-strawberry" : ""
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                to="/stores"
+                className={`block text-blueberry hover:text-strawberry ${
+                  isActive("/stores") ? "text-strawberry" : ""
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Stores
+              </Link>
+              <Link
+                to="/products"
+                className={`block text-blueberry hover:text-strawberry ${
+                  isActive("/products") ? "text-strawberry" : ""
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Products
+              </Link>
+              {user?.role === "STORE" && (
                 <Link
-                  to="/"
-                  className="block text-fashion-DEFAULT hover:text-fashion-accent"
+                  to="/my-store"
+                  className={`block text-blueberry hover:text-strawberry ${
+                    isActive("/my-store") ? "text-strawberry" : ""
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Home
+                  My Store
                 </Link>
-              </li>
-              <li>
-                <Link
-                  to="/stores"
-                  className="block text-fashion-DEFAULT hover:text-fashion-accent"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Stores
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/products"
-                  className="block text-fashion-DEFAULT hover:text-fashion-accent"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Products
-                </Link>
-              </li>
-              {isAuthenticated && (
+              )}
+              {isAuthenticated && user?.role === "CUSTOMER" && (
                 <>
-                  <li>
-                    <Link
-                      to="/my-rentals"
-                      className="block text-fashion-DEFAULT hover:text-fashion-accent"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      My Rentals
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/chat"
-                      className="block text-fashion-DEFAULT hover:text-fashion-accent"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Chat
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/settings"
-                      className="block text-fashion-DEFAULT hover:text-fashion-accent"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Settings
-                    </Link>
-                  </li>
+                  <Link
+                    to="/my-rentals"
+                    className={`block text-blueberry hover:text-strawberry ${
+                      isActive("/my-rentals") ? "text-strawberry" : ""
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    My Rentals
+                  </Link>
+                  <Link
+                    to="/chat"
+                    className={`block text-blueberry hover:text-strawberry ${
+                      isActive("/chat") ? "text-strawberry" : ""
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Chat
+                  </Link>
                 </>
               )}
-            </ul>
+            </div>
           </nav>
         )}
       </div>

@@ -60,6 +60,19 @@
     --dashboard-orange: #F97316;
     --dashboard-light-orange: #FFEDD5;
     --dashboard-dark: #757575;
+
+    /* Custom */
+    --color-blueberry: #2C3F70;
+    --color-strawberry: #A5231C;
+    --color-buttercream: #C8D4E5;
+    --color-violet: #8089D2;
+    --color-meringue: #E8EBED;
+    --color-text: #222b45;
+    --color-white: #fff;
+
+    button, a {
+      cursor: pointer;
+    }
   }
 
   .dark {
@@ -188,4 +201,21 @@
   .text-fashion-light { color: hsl(var(--fashion-light)); }
   .text-fashion-muted { color: hsl(var(--fashion-muted)); }
   .text-fashion-hover { color: hsl(var(--fashion-hover)); }
+
+  .text-blueberry { color: var(--color-blueberry); }
+  .text-strawberry { color: var(--color-strawberry); }
+  .text-buttercream { color: var(--color-buttercream); }
+  .text-violet { color: var(--color-violet); }
+  .text-meringue { color: var(--color-meringue); }
+  .text-text { color: var(--color-text); }
+  .text-white { color: var(--color-white); }
+  
+  .bg-blueberry { background-color: var(--color-blueberry); }
+  .bg-strawberry { background-color: var(--color-strawberry); }
+  .bg-buttercream { background-color: var(--color-buttercream); }
+  .bg-violet { background-color: var(--color-violet); }
+  .bg-meringue { background-color: var(--color-meringue); }
+  .bg-text { background-color: var(--color-text); }
+  .bg-white { background-color: var(--color-white); }
+  
 }

@@ -131,10 +131,10 @@ const Register = () => {
       <div className="container mx-auto py-10 flex justify-center items-center min-h-[calc(100vh-150px)]">
         <Card className="w-full max-w-md border-sidebar-border shadow-lg">
           <CardHeader className="space-y-1 pb-6">
-            <CardTitle className="text-3xl font-bold text-fashion-DEFAULT text-center">
+            <CardTitle className="text-3xl font-bold text-blueberry text-center">
               Join StyleShare
             </CardTitle>
-            <CardDescription className="text-center text-muted-foreground">
+            <CardDescription className="text-center text-fashion-muted">
               Create an account to start renting amazing styles
             </CardDescription>
           </CardHeader>
@@ -374,10 +374,10 @@ const Register = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-fashion-accent hover:bg-fashion-accent/90 text-white font-medium py-2 rounded-md shadow-md transition-colors"
+                  className="w-full bg-blueberry hover:bg-blue-950 text-white font-medium py-2 rounded-md shadow-md transition-colors"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Creating Account..." : "Create Account"}
+                  {isLoading ? "Creating account..." : "Create Account"}
                 </Button>
               </form>
             </Form>
@@ -387,7 +387,7 @@ const Register = () => {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-fashion-accent hover:text-fashion-accent/80 font-medium hover:underline"
+                className="text-blueberry hover:text-strawberry font-medium hover:underline"
               >
                 Sign in
               </Link>

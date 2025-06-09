@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Product } from "@/lib/types";
 import ApiConstants from "@/lib/api";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,15 +27,9 @@ const Products = () => {
       setSelectedCategories([categoryParam]);
     }
     const fetchProducts = async () => {
-    try {
+      try {
         const response = await axiosInstance.get(ApiConstants.LIST_PRODUCTS);
-        const rawProducts = response.data;
-        const products = rawProducts.map(item => (
-          {
-            ...item,
-            id: item._id,
-          }
-        ));
+        const products = response.data;
         setProducts(products);
         console.log("Fetched products:", products);
       } catch (error) {
@@ -91,7 +85,7 @@ const Products = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-8">
+        <h1 className="text-3xl font-bold text-blueberry mb-8">
           Browse Products
         </h1>
 
@@ -101,7 +95,7 @@ const Products = () => {
             <Button
               variant="outline"
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="w-full border border-gray-300"
+              className="w-full border border-blueberry text-blueberry hover:bg-blueberry hover:text-white"
             >
               {isFilterOpen ? "Hide Filters" : "Show Filters"}
             </Button>
@@ -111,7 +105,7 @@ const Products = () => {
           <div
             className={`lg:w-1/4 ${isFilterOpen ? "block" : "hidden lg:block"}`}
           >
-            <div className="bg-white p-6 rounded-lg shadow-md sticky top-24">
+            <div className="bg-white text-blueberry p-6 rounded-lg shadow-md sticky top-24">
               <h2 className="text-xl font-semibold mb-4">Filters</h2>
 
               {/* Search */}
@@ -157,7 +151,7 @@ const Products = () => {
               <Button
                 variant="outline"
                 onClick={clearFilters}
-                className="w-full"
+                className="w-full border border-blueberry text-blueberry hover:bg-blue-950 hover:text-white"
               >
                 Clear Filters
               </Button>
@@ -173,7 +167,7 @@ const Products = () => {
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <ProductCard key={product._id} product={product} />
                   ))}
                 </div>
               </>
@@ -185,7 +179,7 @@ const Products = () => {
                 </p>
                 <Button
                   onClick={clearFilters}
-                  className="mt-4 bg-fashion-accent hover:bg-fashion-accent/90"
+                  className="mt-4 bg-blueberry hover:bg-blue-950 text-white"
                 >
                   Clear Filters
                 </Button>

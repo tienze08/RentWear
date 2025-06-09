@@ -41,11 +41,6 @@ const Settings = () => {
   const [formData, setFormData] = useState<FormData>(() =>
     initializeFormData(user)
   );
-
-  console.log("User data:", user);
-  console.log("Form data:", formData);
-  console.log("Selected file:", selectedFile);
-
   useEffect(() => {
     setFormData(initializeFormData(user));
   }, [user, initializeFormData]);
@@ -142,9 +137,7 @@ const Settings = () => {
               <Avatar className="w-24 h-24 border-2 border-gray-200">
                 {previewUrl || formData.avatar ? (
                   <AvatarImage
-                    src={
-                      previewUrl || formData.avatar
-                    }
+                    src={previewUrl || formData.avatar}
                     alt={formData.username}
                   />
                 ) : (

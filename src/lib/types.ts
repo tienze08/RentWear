@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 
 export interface User {
-  id: string;
+  _id: string;
   username: string;
   email: string;
   role: "CUSTOMER" | "STORE" | "ADMIN";
@@ -16,7 +16,7 @@ export interface User {
 }
 
 export interface Product {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   rentalPrice: number;
@@ -28,7 +28,7 @@ export interface Product {
 }
 
 export interface Store {
-  id: string;
+  _id: string;
   storeName: string;
   description: string;
   logoUrl: string;
@@ -36,13 +36,31 @@ export interface Store {
 }
 
 export interface Rental {
-  id: string;
-  productId: string;
-  product: Product;
-  startDate: string;
-  endDate: string;
+  _id: string;
+  productId: Product;
+  customerId: User;
+  storeId: Store;
+  rentalStart: string;
+  rentalEnd: string;
   totalPrice: number;
-  status: "active" | "completed" | "cancelled";
+  depositPaid: boolean;
+  status: "PENDING" | "APPROVED" | "CANCELED" | "RETURNED";
+  product: {
+    _id: string;
+    name: string;
+    images: string[];
+    size: string;
+  };
+}
+
+export interface RentalFormData {
+  productId: string | undefined;
+  customerId: string;
+  storeId: string;
+  rentalStart: string;
+  rentalEnd: string;
+  totalPrice: number;
+  depositPaid: boolean;
 }
 
 export interface ChangePasswordFormData {

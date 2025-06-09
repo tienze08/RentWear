@@ -17,8 +17,13 @@ import { CartProvider } from "./components/contexts/CartContext";
 import { RentalProvider } from "./components/contexts/RentalContext";
 import { AuthProvider } from "./components/contexts/AuthContext";
 import { UserProvider } from "./components/contexts/UserContext";
-import { SocketProvider } from "./components/contexts/SocketContext";
 import Settings from "./pages/Setting";
+import MyStore from "./pages/MyStore";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import GoogleCallback from "./pages/GoogleCallback";
 
 const queryClient = new QueryClient();
 
@@ -29,27 +34,40 @@ const App = () => (
         <AuthProvider>
           <UserProvider>
             {/* <SocketProvider> */}
-              <CartProvider>
-                <RentalProvider>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route
-                      path="/products/:productId"
-                      element={<ProductDetail />}
-                    />
-                    <Route path="/stores" element={<Stores />} />
-                    <Route path="/stores/:storeId" element={<StoreDetail />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/my-rentals" element={<MyRentals />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="/chat" element={<Chat />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </RentalProvider>
-              </CartProvider>
+            <CartProvider>
+              <RentalProvider>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route
+                    path="/products/:productId"
+                    element={<ProductDetail />}
+                  />
+                  <Route path="/stores" element={<Stores />} />
+                  <Route path="/stores/:storeId" element={<StoreDetail />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/my-rentals" element={<MyRentals />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/my-store" element={<MyStore />} />
+                  <Route path="/payment-success" element={<PaymentSuccess />} />
+                  <Route path="/payment-cancel" element={<PaymentCancel />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route
+                    path="/reset-password/:token"
+                    element={<ResetPassword />}
+                  />
+                  <Route
+                    path="/auth/google/callback"
+                    element={<GoogleCallback />}
+                  />
+                  <Route path="/auth/google" element={<GoogleCallback />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </RentalProvider>
+            </CartProvider>
             {/* </SocketProvider> */}
           </UserProvider>
         </AuthProvider>

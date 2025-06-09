@@ -72,10 +72,10 @@ const Login = () => {
       <div className="container mx-auto py-10 flex justify-center items-center min-h-[calc(100vh-150px)]">
         <Card className="w-full max-w-md border-sidebar-border shadow-lg ">
           <CardHeader className="space-y-1 pb-6">
-            <CardTitle className="text-3xl font-bold text-fashion-DEFAULT text-center">
+            <CardTitle className="text-3xl font-bold text-blueberry text-center">
               Welcome Back
             </CardTitle>
-            <CardDescription className="text-center text-muted-foreground">
+            <CardDescription className="text-center text-fashion-muted">
               Enter your credentials to access your account
             </CardDescription>
           </CardHeader>
@@ -142,10 +142,18 @@ const Login = () => {
                     </FormItem>
                   )}
                 />
+                <div className="flex justify-end">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-fashion-accent text-blueberry hover:font-medium"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-fashion-accent hover:bg-fashion-accent/90 text-white font-medium py-2 rounded-md shadow-md transition-colors"
+                  className="w-full bg-blueberry hover:bg-blue-950 text-white font-medium py-2 rounded-md shadow-md transition-colors"
                   disabled={isLoading}
                 >
                   {isLoading ? "Signing in..." : "Sign In"}
@@ -153,7 +161,9 @@ const Login = () => {
 
                 <Button
                   type="button"
-                  className="w-full bg-fashion-accent hover:bg-fashion-accent/90 text-white font-medium py-2 rounded-md shadow-md transition-colors"
+                  className="w-full bg-blueberry hover:bg-blue-950 text-white font-medium py-2 rounded-md shadow-md transition-colors"
+                  onClick={() => window.location.href = "http://localhost:5000/api/auth/google"}
+                  disabled={isLoading}
                 >
                   <FcGoogle className="h-5 w-5" />
                   Sign in with Google
@@ -166,7 +176,7 @@ const Login = () => {
               Don't have an account?{" "}
               <Link
                 to="/register"
-                className="text-fashion-accent hover:text-fashion-accent/80 font-medium hover:underline"
+                className="text-blueberry hover:text-strawberry font-medium hover:underline"
               >
                 Create account
               </Link>

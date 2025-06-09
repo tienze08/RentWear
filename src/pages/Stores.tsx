@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { StoreCard } from "@/components/store/StoreCard";
 import { Input } from "@/components/ui/input";
 import ApiConstants from "@/lib/api";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 import { Store } from "@/lib/types";
 
 const Stores = () => {
@@ -18,10 +18,9 @@ const Stores = () => {
         const rawStores = response.data;
         const stores = rawStores.map((item: any) => ({
           ...item.storeInfo,
-          id: item._id,
+          _id: item._id,
         }));
         setStores(stores);
-        console.log("Fetched stores:", stores);
       } catch (error) {
         console.error("Error fetching stores:", error);
       }
@@ -48,7 +47,7 @@ const Stores = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-8">
+        <h1 className="text-3xl font-bold text-blueberry mb-8">
           Browse Stores
         </h1>
 
@@ -64,7 +63,7 @@ const Stores = () => {
         {filteredStores.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredStores.map((store) => (
-              <StoreCard key={store.id} store={store} />
+              <StoreCard key={store._id} store={store} />
             ))}
           </div>
         ) : (
