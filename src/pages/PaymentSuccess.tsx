@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();

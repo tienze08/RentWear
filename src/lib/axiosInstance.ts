@@ -1,45 +1,57 @@
 import axios from "axios";
 
-export const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api",
-  withCredentials: true, // Quan trọng để gửi cookie (refreshToken)
+const API_BASE_URL = "http://localhost:5000/api";
+
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // Quan trọng: gửi cookie lên server
 });
 
-// Gắn accessToken vào mỗi request trước khi gửi
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-// Xử lý tự động làm mới token khi hết hạn
+// Response Interceptor
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
     if (
-      (error.response?.status === 401 || error.response?.status === 403) &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh-token")
+    ) {      originalRequest._retry = true;
       try {
-        const res = await axiosInstance.post("/auth/refresh-token");
-        const newAccessToken = res.data.accessToken;
-        localStorage.setItem("accessToken", newAccessToken);
+        // Gọi refresh token endpoint - backend sẽ lấy refresh token từ cookie
+        const { data } = await axios.post(
+          `${API_BASE_URL}/auth/refresh-token`,
+          {}, // Empty body vì backend lấy refresh token từ cookie
+          { withCredentials: true } // Quan trọng: gửi cookie
+        );
 
-        // Cập nhật token cho request gốc
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        const { accessToken } = data;
+        localStorage.setItem("accessToken", accessToken);
 
-        return axiosInstance(originalRequest);
-      } catch (refreshError) {
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return axiosInstance(originalRequest);      } catch (refreshError) {
         localStorage.removeItem("accessToken");
-        window.location.href = "/login"; // Redirect về trang login
+        // Không cần xóa refreshToken từ localStorage vì nó ở cookie
+        // Chỉ redirect nếu không phải đang ở trang login/register
+        const currentPath = window.location.pathname;
+        if (currentPath !== "/login" && currentPath !== "/register") {
+          window.location.href = "/login";
+        }
         return Promise.reject(refreshError);
       }
     }
@@ -47,3 +59,5 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export default axiosInstance;

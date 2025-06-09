@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Rental } from "@/lib/types";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 
 const Cart = () => {
   const { rentals, cancelRental, fetchMyRentals } = useRental();
@@ -68,9 +68,7 @@ const Cart = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-blueberry mb-8">
-          Your Cart
-        </h1>
+        <h1 className="text-3xl font-bold text-blueberry mb-8">Your Cart</h1>
 
         {rentals.length > 0 ? (
           <div className="flex flex-col lg:flex-row gap-8">
@@ -79,7 +77,8 @@ const Cart = () => {
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-xl font-semibold text-fashion-DEFAULT">
-                    Cart Items ({rentals.filter((r) => r.status === "PENDING").length})
+                    Cart Items (
+                    {rentals.filter((r) => r.status === "PENDING").length})
                   </h2>
                 </div>
 

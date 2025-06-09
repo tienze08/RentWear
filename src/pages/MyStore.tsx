@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Product, Store, Rental } from "@/lib/types";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 // import ApiConstants from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -302,17 +302,17 @@ const MyStore = () => {
                       <Label htmlFor="name" className="text-sm font-medium">
                         Product Name
                       </Label>
-                  <Input
-                    id="name"
-                    value={newProduct.name}
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, name: e.target.value })
-                    }
+                      <Input
+                        id="name"
+                        value={newProduct.name}
+                        onChange={(e) =>
+                          setNewProduct({ ...newProduct, name: e.target.value })
+                        }
                         placeholder="Enter product name"
                         className="w-full"
-                    required
-                  />
-                </div>
+                        required
+                      />
+                    </div>
 
                     <div className="space-y-2">
                       <Label
@@ -321,38 +321,38 @@ const MyStore = () => {
                       >
                         Rental Price (VNĐ/day)
                       </Label>
-                  <Input
-                    id="rentalPrice"
-                    type="number"
-                    value={newProduct.rentalPrice}
-                    onChange={(e) =>
-                      setNewProduct({
-                        ...newProduct,
-                        rentalPrice: e.target.value,
-                      })
-                    }
+                      <Input
+                        id="rentalPrice"
+                        type="number"
+                        value={newProduct.rentalPrice}
+                        onChange={(e) =>
+                          setNewProduct({
+                            ...newProduct,
+                            rentalPrice: e.target.value,
+                          })
+                        }
                         placeholder="Enter rental price"
                         className="w-full"
                         min="0"
-                    required
-                  />
-                </div>
+                        required
+                      />
+                    </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="category" className="text-sm font-medium">
                         Category
                       </Label>
                       <select
-                    id="category"
-                    value={newProduct.category}
-                    onChange={(e) =>
+                        id="category"
+                        value={newProduct.category}
+                        onChange={(e) =>
                           setNewProduct({
                             ...newProduct,
                             category: e.target.value,
                           })
-                    }
+                        }
                         className="w-full rounded-md border border-input bg-background px-3 py-2"
-                    required
+                        required
                       >
                         <option value="">Select a category</option>
                         <option value="DRESS">Dress</option>
@@ -360,20 +360,20 @@ const MyStore = () => {
                         <option value="ACCESSORY">Accessory</option>
                         <option value="SHOES">Shoes</option>
                       </select>
-                </div>
+                    </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="size" className="text-sm font-medium">
                         Size
                       </Label>
                       <select
-                    id="size"
-                    value={newProduct.size}
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, size: e.target.value })
-                    }
+                        id="size"
+                        value={newProduct.size}
+                        onChange={(e) =>
+                          setNewProduct({ ...newProduct, size: e.target.value })
+                        }
                         className="w-full rounded-md border border-input bg-background px-3 py-2"
-                    required
+                        required
                       >
                         <option value="">Select a size</option>
                         <option value="XS">XS</option>
@@ -383,7 +383,7 @@ const MyStore = () => {
                         <option value="XL">XL</option>
                         <option value="XXL">XXL</option>
                       </select>
-                </div>
+                    </div>
 
                     <div className="md:col-span-2 space-y-2">
                       <Label
@@ -392,20 +392,20 @@ const MyStore = () => {
                       >
                         Description
                       </Label>
-                  <Textarea
-                    id="description"
-                    value={newProduct.description}
-                    onChange={(e) =>
-                      setNewProduct({
-                        ...newProduct,
-                        description: e.target.value,
-                      })
-                    }
+                      <Textarea
+                        id="description"
+                        value={newProduct.description}
+                        onChange={(e) =>
+                          setNewProduct({
+                            ...newProduct,
+                            description: e.target.value,
+                          })
+                        }
                         placeholder="Enter product description"
                         className="w-full min-h-[100px]"
-                    required
-                  />
-                </div>
+                        required
+                      />
+                    </div>
 
                     <div className="md:col-span-2 space-y-2">
                       <Label htmlFor="image" className="text-sm font-medium">
@@ -451,15 +451,15 @@ const MyStore = () => {
                                 PNG, JPG, GIF up to 10MB
                               </p>
                             </div>
-                  <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) =>
-                      setSelectedImage(
-                        e.target.files ? e.target.files[0] : null
-                      )
-                    }
+                            <Input
+                              id="image"
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) =>
+                                setSelectedImage(
+                                  e.target.files ? e.target.files[0] : null
+                                )
+                              }
                               className="hidden"
                             />
                             <Button
@@ -474,17 +474,17 @@ const MyStore = () => {
                           </div>
                         )}
                       </div>
-                </div>
-              </div>
+                    </div>
+                  </div>
 
                   <div className="flex justify-end gap-4 pt-4 border-t">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowAddProduct(false)}
-                >
-                  Cancel
-                </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowAddProduct(false)}
+                    >
+                      Cancel
+                    </Button>
                     <Button
                       type="submit"
                       className="bg-blue-600 hover:bg-blue-700"

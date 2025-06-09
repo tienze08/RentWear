@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { StoreCard } from "@/components/store/StoreCard";
 import { Input } from "@/components/ui/input";
 import ApiConstants from "@/lib/api";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 import { Store } from "@/lib/types";
 
 const Stores = () => {

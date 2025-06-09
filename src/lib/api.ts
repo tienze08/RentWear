@@ -16,6 +16,8 @@ const ApiConstants = {
   GET_STORE_BY_ID: (storeId: string) => `${BASE_URL}/stores/${storeId}`,
   GET_USER_RENTALS: `${BASE_URL}/rentals/user/me`,
   RENTALS: `${BASE_URL}/rentals`,
+  FORGOT_PASSWORD: `${BASE_URL}/auth/forgot-password`,
+  RESET_PASSWORD: `${BASE_URL}/auth/reset-password`,
 } as const;
 
 export default ApiConstants;

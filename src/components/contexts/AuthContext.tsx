@@ -1,8 +1,8 @@
 // src/components/contexts/AuthContext.tsx
 import { User } from "@/lib/types";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { axiosInstance } from "@/lib/axiosInstance";
-import axios, { AxiosError } from "axios";
+import axiosInstance from "@/lib/axiosInstance";
+import { AxiosError } from "axios";
 import ApiConstants from "@/lib/api";
 
 interface AuthContextType {
@@ -18,6 +18,7 @@ interface AuthContextType {
     role: string,
     storeInfo?: { storeName: string; address: string; phone: string }
   ) => Promise<void>;
+  handleGoogleCallback: (accessToken: string) => Promise<void>; // Thêm kiểu cho hàm handleGoogleCallback
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,17 +49,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
   }, []);
-
   const login = async (email: string, password: string) => {
     try {
-      // 1. Gọi API login (server sẽ set refreshToken vào cookie)
-      const response = await axios.post(ApiConstants.LOGIN, {
+      // 1. Gọi API login - backend sẽ set refresh token vào cookie
+      const response = await axiosInstance.post(ApiConstants.LOGIN, {
         email,
         password,
       });
 
-      const { accessToken } = response.data;
-      // 2. Lưu accessToken vào localStorage
+      const { accessToken } = response.data; // Không còn refreshToken trong response
+      // 2. Chỉ lưu accessToken vào localStorage
       localStorage.setItem("accessToken", accessToken);
       axiosInstance.defaults.headers.common[
         "Authorization"
@@ -77,7 +77,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       throw new Error("Login failed");
     }
   };
-
   const register = async (
     name: string,
     email: string,
@@ -94,8 +93,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         storeInfo,
       });
 
-      const { accessToken } = response.data;
-      // 2. Lưu accessToken
+      const { accessToken } = response.data; // Không còn refreshToken trong response
+      // 2. Chỉ lưu accessToken
       localStorage.setItem("accessToken", accessToken);
       axiosInstance.defaults.headers.common[
         "Authorization"
@@ -114,10 +113,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       throw new Error("Registration failed");
     }
   };
-
   const logout = async () => {
     try {
-      // Gọi API /logout để server clear cookie
+      // Gọi API /logout - backend sẽ xóa refresh token cookie
       await axiosInstance.post(ApiConstants.LOGOUT);
     } catch (err) {
       console.warn("Logout request error:", err);
@@ -127,8 +125,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");
       delete axiosInstance.defaults.headers.common["Authorization"];
-      window.location.href = "/login";
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
     }
+  };
+
+  // Google login callback handler
+  const handleGoogleCallback = async (accessToken: string) => {
+    localStorage.setItem("accessToken", accessToken);
+    axiosInstance.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${accessToken}`;
+    const userRes = await axiosInstance.get(ApiConstants.GET_CURRENT_USER);
+    const userData = userRes.data;
+    setUser(userData);
+    setIsAuthenticated(true);
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   return (
@@ -140,6 +153,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         login,
         logout,
         register,
+        handleGoogleCallback, // expose for Google login
       }}
     >
       {children}

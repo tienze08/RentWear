@@ -1,8 +1,6 @@
-
 import type { Product } from "@/lib/types";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { axiosInstance } from "@/lib/axiosInstance";
-
+import axiosInstance from "@/lib/axiosInstance";
 
 interface CartContextType {
   items: Array<{ product: Product; rentalDays: number }>;
@@ -16,10 +14,14 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<Array<{ product: Product; rentalDays: number }>>([]);
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [items, setItems] = useState<
+    Array<{ product: Product; rentalDays: number }>
+  >([]);
 
-  // Fetch cart items 
+  // Fetch cart items
   // useEffect(() => {
   //   const fetchRentalsCart = async () => {
   //     try {
@@ -45,7 +47,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addToCart = (product: Product, rentalDays: number) => {
     setItems((prev) => {
       // Check if product already exists in cart
-      const existingIndex = prev.findIndex((item) => item.product._id === product._id);
+      const existingIndex = prev.findIndex(
+        (item) => item.product._id === product._id
+      );
 
       if (existingIndex >= 0) {
         // Replace the existing item with updated rental days
@@ -60,7 +64,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const removeFromCart = (productId: string) => {
-    setItems(prev => prev.filter(item => item.product._id !== productId));
+    setItems((prev) => prev.filter((item) => item.product._id !== productId));
   };
 
   const clearCart = () => {
@@ -68,25 +72,27 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const isInCart = (productId: string) => {
-    return items.some(item => item.product._id === productId);
+    return items.some((item) => item.product._id === productId);
   };
 
   const totalItems = items.length;
-  
+
   const totalPrice = items.reduce((total, item) => {
-    return total + (item.product.rentalPrice * item.rentalDays);
+    return total + item.product.rentalPrice * item.rentalDays;
   }, 0);
 
   return (
-    <CartContext.Provider value={{ 
-      items, 
-      addToCart, 
-      removeFromCart, 
-      clearCart, 
-      isInCart, 
-      totalItems,
-      totalPrice
-    }}>
+    <CartContext.Provider
+      value={{
+        items,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        isInCart,
+        totalItems,
+        totalPrice,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

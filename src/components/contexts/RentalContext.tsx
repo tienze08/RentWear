@@ -1,5 +1,5 @@
 import ApiConstants from "@/lib/api";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 import type { Rental, RentalFormData } from "@/lib/types";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
@@ -66,7 +66,9 @@ export const RentalProvider: React.FC<{ children: React.ReactNode }> = ({
     console.log("Current rentals before cancellation:", rentals);
     setRentals((prev) => prev.filter((rental) => rental._id !== rentalId));
     // Optionally, you can also make an API call to cancel the rental
-    axiosInstance.patch(`${ApiConstants.RENTALS}/${rentalId}`, { status: "CANCELED" });
+    axiosInstance.patch(`${ApiConstants.RENTALS}/${rentalId}`, {
+      status: "CANCELED",
+    });
   };
 
   const getRentalsByStatus = (status: Rental["status"]) => {

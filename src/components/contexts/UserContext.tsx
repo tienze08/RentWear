@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 import { User, UpdateUserFormData, ChangePasswordFormData } from "@/lib/types";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 import { AxiosResponse, AxiosError } from "axios";
 import ApiConstants from "@/lib/api";
 import { toast } from "sonner";

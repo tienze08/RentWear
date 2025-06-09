@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Product } from "@/lib/types";
 import ApiConstants from "@/lib/api";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();

@@ -4,7 +4,7 @@ import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/product/ProductCard";
 import { StoreCard } from "@/components/store/StoreCard";
 import { Product, Store } from "@/lib/types";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 import ApiConstants from "@/lib/api";
 import { motion } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";

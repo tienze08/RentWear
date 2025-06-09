@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Store, Product } from "@/lib/types";
-import { axiosInstance } from "@/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 import ApiConstants from "@/lib/api";
 import { useRental } from "@/components/contexts/RentalContext";
 import { useAuth } from "@/components/contexts/AuthContext";
