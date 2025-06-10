@@ -16,23 +16,23 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const { user } = useAuth();
   const inCart = isInCart(product._id);
 
-  const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!user) {
-      alert("Hãy đăng nhập để thêm sản phẩm vào giỏ hàng.");
-      return;
-    }
-    try {
-      await createRental({
-        productId: product._id,
-        rentalDays: 3,
-        userId: user._id,
-      });
-      addToCart(product, 3); // Add to cart with default rental days
-    } catch (error) {
-      console.error("Failed to add to cart:", error);
-    }
-  };
+  // const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   if (!user) {
+  //     alert("Hãy đăng nhập để thêm sản phẩm vào giỏ hàng.");
+  //     return;
+  //   }
+  //   try {
+  //     await createRental({
+  //       productId: product._id,
+  //       rentalDays: 3,
+  //       userId: user._id,
+  //     });
+  //     addToCart(product, 3); // Add to cart with default rental days
+  //   } catch (error) {
+  //     console.error("Failed to add to cart:", error);
+  //   }
+  // };
 
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">

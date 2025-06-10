@@ -1,6 +1,5 @@
 import type { Product } from "@/lib/types";
-import React, { createContext, useContext, useState, useEffect } from "react";
-import axiosInstance from "@/lib/axiosInstance";
+import React, { createContext, useContext, useState } from "react";
 
 interface CartContextType {
   items: Array<{ product: Product; rentalDays: number }>;

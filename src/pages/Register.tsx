@@ -96,11 +96,7 @@ const Register = () => {
       password: "",
       confirmPassword: "",
       role: "CUSTOMER",
-      storeInfo: {
-        storeName: "",
-        address: "",
-        phone: "",
-      },
+      storeInfo: undefined,
     },
   });
 
@@ -114,16 +110,35 @@ const Register = () => {
         data.email,
         data.password,
         data.role,
-        data.storeInfo
+        data.role === "CUSTOMER" ? undefined : data.storeInfo
       );
-      toast.success("Registration successful!");
-      navigate("/");
-    } catch (error) {
-      toast.error("Failed to register. Please try again.");
+      toast.success(
+        "Đăng ký thành công! Hãy kiểm tra email để xác thực tài khoản."
+      );
+      navigate("/login");
+    } catch (error: unknown) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "message" in error &&
+        (error as { message?: string }).message === "Tài khoản đã được đăng ký"
+      ) {
+        toast.error("Tài khoản đã được đăng ký!");
+      } else {
+        toast.error("Đăng ký thất bại. Vui lòng thử lại.");
+      }
       console.error("Registration error:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form submit event triggered");
+    form.handleSubmit(onSubmit, (errors) => {
+      console.log("Validation errors:", errors);
+    })(e);
   };
 
   return (
@@ -140,10 +155,7 @@ const Register = () => {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-5"
-              >
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <FormField
                   control={form.control}
                   name="role"

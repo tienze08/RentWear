@@ -85,27 +85,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     storeInfo?: { storeName: string; address: string; phone: string }
   ) => {
     try {
-      const response = await axiosInstance.post(ApiConstants.REGISTER, {
+      await axiosInstance.post(ApiConstants.REGISTER, {
         username: name,
         email,
         password,
         role,
         storeInfo,
       });
-
-      const { accessToken } = response.data; // Không còn refreshToken trong response
-      // 2. Chỉ lưu accessToken
-      localStorage.setItem("accessToken", accessToken);
-      axiosInstance.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${accessToken}`;
-
-      // 3. Lấy user
-      const userRes = await axiosInstance.get(ApiConstants.GET_CURRENT_USER);
-      const userData = userRes.data;
-      setUser(userData);
-      setIsAuthenticated(true);
-      localStorage.setItem("user", JSON.stringify(userData));
+      // Không tự động login nữa, chờ xác thực email
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         throw new Error(error.response.data.message || "Registration failed");

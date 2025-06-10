@@ -113,9 +113,9 @@ const ProductDetail = () => {
     );
   }
 
-  const handleAddToCart = () => {
-    addToCart(product, rentalDays);
-  };
+  // const handleAddToCart = () => {
+  //   addToCart(product, rentalDays);
+  // };
 
   const handleAddRental = async () => {
     if (!user) {
