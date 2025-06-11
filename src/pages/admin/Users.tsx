@@ -232,12 +232,6 @@ const Users = () => {
                                                     <DropdownMenuItem>
                                                         View profile
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        Edit user
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        Change role
-                                                    </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     {user.status ===
                                                     "Active" ? (
