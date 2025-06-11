@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Search,
     Filter,
-    Store,
+    Store as StoreIcon,
     MapPin,
     MoreHorizontal,
     Plus,
@@ -27,82 +27,35 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const shops = [
-    {
-        id: 1,
-        name: "Mountain Gear Co.",
-        location: "Denver, CO",
-        owner: "Robert Johnson",
-        products: 85,
-        status: "Active",
-    },
-    {
-        id: 2,
-        name: "Urban Outdoor Shop",
-        location: "Portland, OR",
-        owner: "Sarah Miller",
-        products: 120,
-        status: "Active",
-    },
-    {
-        id: 3,
-        name: "Lake District Rentals",
-        location: "Seattle, WA",
-        owner: "Michael Brown",
-        products: 65,
-        status: "Pending",
-    },
-    {
-        id: 4,
-        name: "Adventure Hub",
-        location: "Boulder, CO",
-        owner: "Emma Wilson",
-        products: 45,
-        status: "Active",
-    },
-    {
-        id: 5,
-        name: "Coastal Gear Outlet",
-        location: "San Diego, CA",
-        owner: "David Martinez",
-        products: 0,
-        status: "Inactive",
-    },
-    {
-        id: 6,
-        name: "Summit Equipment",
-        location: "Salt Lake City, UT",
-        owner: "Lisa Garcia",
-        products: 92,
-        status: "Active",
-    },
-    {
-        id: 7,
-        name: "River Valley Rentals",
-        location: "Boise, ID",
-        owner: "Thomas Wright",
-        products: 38,
-        status: "Active",
-    },
-    {
-        id: 8,
-        name: "Trailhead Supplies",
-        location: "Flagstaff, AZ",
-        owner: "Jessica Lee",
-        products: 56,
-        status: "Pending",
-    },
-];
+import axiosInstance from "@/lib/axiosInstance";
+import ApiConstants from "@/lib/api";
+import { User } from "@/lib/types";
 
 const RentalShop = () => {
+    const [stores, setStores] = useState<User[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredShops = shops.filter(
-        (shop) =>
-            shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            shop.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            shop.owner.toLowerCase().includes(searchQuery.toLowerCase())
+    console.log("Stores", stores);
+
+    useEffect(() => {
+        const fetchStores = async () => {
+            try {
+                const response = await axiosInstance.get(ApiConstants.STORES);
+                const usersWithStores = response.data;
+
+                setStores(usersWithStores);
+            } catch (error) {
+                console.error("Error fetching stores:", error);
+            }
+        };
+
+        fetchStores();
+    }, []);
+
+    const filteredStores = stores.filter((shop) =>
+        shop.storeInfo?.storeName
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
     );
 
     const getStatusColor = (status: string) => {
@@ -172,29 +125,29 @@ const RentalShop = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filteredShops.map((shop) => (
+                                {filteredStores.map((shop) => (
                                     <TableRow
-                                        key={shop.id}
+                                        key={shop.username}
                                         className="border-b border-sidebar-border"
                                     >
                                         <TableCell>
                                             <div className="flex items-center">
                                                 <div className="h-8 w-8 rounded bg-blue-100 flex items-center justify-center mr-3">
-                                                    <Store className="h-4 w-4 text-blue-600" />
+                                                    <StoreIcon className="h-4 w-4 text-blue-600" />
                                                 </div>
                                                 <span className="font-medium">
-                                                    {shop.name}
+                                                    {shop.storeInfo?.storeName}
                                                 </span>
                                             </div>
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center">
                                                 <MapPin className="h-4 w-4 text-gray-400 mr-1" />
-                                                {shop.location}
+                                                {shop.address}
                                             </div>
                                         </TableCell>
-                                        <TableCell>{shop.owner}</TableCell>
-                                        <TableCell>{shop.products}</TableCell>
+                                        <TableCell>{shop.username}</TableCell>
+                                        <TableCell>{shop.phone}</TableCell>
                                         <TableCell>
                                             <Badge
                                                 variant="outline"
@@ -233,7 +186,7 @@ const RentalShop = () => {
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     {shop.status ===
-                                                    "Active" ? (
+                                                    "ACTIVE" ? (
                                                         <DropdownMenuItem className="text-yellow-600">
                                                             Deactivate shop
                                                         </DropdownMenuItem>
@@ -250,7 +203,7 @@ const RentalShop = () => {
                             </TableBody>
                         </Table>
 
-                        {filteredShops.length === 0 && (
+                        {filteredStores.length === 0 && (
                             <div className="text-center py-10">
                                 <p className="text-gray-500">No shops found</p>
                             </div>

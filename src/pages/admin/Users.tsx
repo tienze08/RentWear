@@ -1,7 +1,12 @@
-import { useState } from "react";
-import { Search, Filter, User, UserPlus, MoreHorizontal } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { getAllUsers } from "@/components/contexts/UserContext";
+import {
+    User as UserIcon,
+    UserPlus,
+    MoreHorizontal,
+    Search,
+    Filter,
+} from "lucide-react";
 import {
     Table,
     TableBody,
@@ -10,6 +15,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -21,85 +28,37 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const users = [
-    {
-        id: 1,
-        name: "John Smith",
-        email: "john@example.com",
-        role: "Customer",
-        status: "Active",
-        joinDate: "Mar 15, 2025",
-    },
-    {
-        id: 2,
-        name: "Emma Wilson",
-        email: "emma@example.com",
-        role: "Customer",
-        status: "Active",
-        joinDate: "Apr 2, 2025",
-    },
-    {
-        id: 3,
-        name: "Michael Brown",
-        email: "michael@example.com",
-        role: "Staff",
-        status: "Active",
-        joinDate: "Jan 10, 2025",
-    },
-    {
-        id: 4,
-        name: "Sophia Garcia",
-        email: "sophia@example.com",
-        role: "Customer",
-        status: "Inactive",
-        joinDate: "Feb 14, 2025",
-    },
-    {
-        id: 5,
-        name: "William Johnson",
-        email: "william@example.com",
-        role: "Admin",
-        status: "Active",
-        joinDate: "May 1, 2024",
-    },
-    {
-        id: 6,
-        name: "Olivia Martinez",
-        email: "olivia@example.com",
-        role: "Partner",
-        status: "Active",
-        joinDate: "Dec 20, 2024",
-    },
-    {
-        id: 7,
-        name: "James Miller",
-        email: "james@example.com",
-        role: "Customer",
-        status: "Blocked",
-        joinDate: "Apr 12, 2025",
-    },
-    {
-        id: 8,
-        name: "Ava Davis",
-        email: "ava@example.com",
-        role: "Customer",
-        status: "Active",
-        joinDate: "Mar 16, 2025",
-    },
-];
-
 const Users = () => {
+    const [users, setUsers] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const data = await getAllUsers();
+                setUsers(data);
+                console.log("Fetched users:", data);
+            } catch (error) {
+                console.error("Failed to fetch users:", error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
 
     const filteredUsers = users.filter(
         (user) =>
-            user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.role.toLowerCase().includes(searchQuery.toLowerCase())
+            (user.name?.toLowerCase() ?? "").includes(
+                searchQuery.toLowerCase()
+            ) ||
+            (user.email?.toLowerCase() ?? "").includes(
+                searchQuery.toLowerCase()
+            ) ||
+            (user.role?.toLowerCase() ?? "").includes(searchQuery.toLowerCase())
     );
 
     const getStatusColor = (status: string) => {
-        switch (status.toLowerCase()) {
+        switch (status?.toLowerCase()) {
             case "active":
                 return "border-green-500 text-green-600 bg-green-50";
             case "inactive":
@@ -112,7 +71,7 @@ const Users = () => {
     };
 
     const getRoleBadge = (role: string) => {
-        switch (role.toLowerCase()) {
+        switch (role?.toLowerCase()) {
             case "admin":
                 return "bg-blue-100 text-blue-800";
             case "staff":
@@ -178,13 +137,13 @@ const Users = () => {
                             <TableBody>
                                 {filteredUsers.map((user) => (
                                     <TableRow
-                                        key={user.id}
+                                        key={user._id}
                                         className="border-b border-sidebar-border"
                                     >
                                         <TableCell>
                                             <div className="flex items-center">
                                                 <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center mr-3">
-                                                    <User className="h-4 w-4 text-gray-500" />
+                                                    <UserIcon className="h-4 w-4 text-gray-500" />
                                                 </div>
                                                 <span className="font-medium">
                                                     {user.name}
@@ -211,7 +170,11 @@ const Users = () => {
                                                 {user.status}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell>{user.joinDate}</TableCell>
+                                        <TableCell>
+                                            {new Date(
+                                                user.createdAt
+                                            ).toLocaleDateString()}
+                                        </TableCell>
                                         <TableCell className="text-right">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
