@@ -13,6 +13,7 @@ const ApiConstants = {
   UPDATE_AVATAR: `${BASE_URL}/users/change-avatar`,
   FORGOT_PASSWORD: `${BASE_URL}/auth/forgot-password`,
   RESET_PASSWORD: `${BASE_URL}/auth/reset-password`,
+  GET_CUSTOMERS: `${BASE_URL}/users/customers`,
   //Product
   LIST_PRODUCTS: `${BASE_URL}/products`,
   GET_PRODUCTS_OF_STORE: (storeId: string) =>
