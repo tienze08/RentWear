@@ -37,8 +37,9 @@ const ProductDetail = () => {
     const fetchUnavailableDates = async () => {
       try {
         const res = await axiosInstance.get(
-          `/products/${productId}/available-dates`
+          `/products/${productId}/unavailable-dates`
         );
+        console.log("Unavailable Dates:", res.data);
         setUnavailableRanges(res.data);
       } catch (error) {
         console.error("Failed to fetch unavailable dates", error);

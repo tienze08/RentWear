@@ -77,6 +77,7 @@ const MyStore = () => {
   // Handle new product submission
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       if (!selectedImage) {
         toast.error("Please select an image");
@@ -113,6 +114,8 @@ const MyStore = () => {
     } catch (error) {
       console.error("Error adding product:", error);
       toast.error("Failed to add product");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -151,6 +154,7 @@ const MyStore = () => {
   // Handle update product
   const handleUpdateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     if (!editingProduct) return;
     try {
       let updateData: any = {
@@ -171,6 +175,7 @@ const MyStore = () => {
         updateData = formData;
         config = { headers: { "Content-Type": "multipart/form-data" } };
       }
+      console.log("updateData", updateData);
       const res = await axiosInstance.put(
         `/products/${editingProduct._id}`,
         updateData,
@@ -186,6 +191,8 @@ const MyStore = () => {
     } catch (error) {
       console.error("Error updating product:", error);
       toast.error("Failed to update product");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -487,9 +494,10 @@ const MyStore = () => {
                     </Button>
                     <Button
                       type="submit"
+                      disabled={loading}
                       className="bg-blue-600 hover:bg-blue-700"
                     >
-                      Add Product
+                      {loading ? "Processing..." : "Add Product"}
                     </Button>
                   </div>
                 </form>
@@ -769,9 +777,10 @@ const MyStore = () => {
                   </Button>
                   <Button
                     type="submit"
+                    disabled={loading}
                     className="bg-blue-600 hover:bg-blue-700"
                   >
-                    Update Product
+                    {loading ? "Processing..." : "Update Product"}
                   </Button>
                 </div>
               </form>

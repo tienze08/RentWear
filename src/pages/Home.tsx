@@ -9,9 +9,16 @@ import ApiConstants from "@/lib/api";
 import { motion } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
 
+const categories = [
+  { label: "Dress", value: "DRESS" },
+  { label: "Suit", value: "SUIT" },
+  { label: "Accessory", value: "ACCESSORY" },
+];
+
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [featuredStores, setFeaturedStores] = useState<Store[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("DRESS");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +42,7 @@ const Home = () => {
 
         const randomProducts = [...products]
           .sort(() => 0.5 - Math.random())
-          .slice(0, 4);
+          .slice(0, 8);
 
         setFeaturedProducts(randomProducts);
         setFeaturedStores(stores.slice(0, 3));
@@ -48,6 +55,10 @@ const Home = () => {
 
     fetchData();
   }, []);
+
+  const filteredProducts = featuredProducts.filter(
+    (product) => product.category === selectedCategory
+  );
 
   return (
     <Layout>
@@ -97,8 +108,23 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-blueberry">
-              Featured Products
+              {""}
             </h2>
+            <div className="flex gap-2">
+              {categories.map((cat) => (
+                <button
+                  key={cat.value}
+                  className={`ml-6 px-4 py-2 rounded-lg text-xl transition ${
+                    selectedCategory === cat.value
+                      ? "underline text-blueberry font-bold"
+                      : "text-blueberry"
+                  }`}
+                  onClick={() => setSelectedCategory(cat.value)}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
             <Link
               to="/products"
               className="text-blueberry hover:text-strawberry font-medium"
@@ -108,16 +134,22 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <motion.div
-                key={product._id}
-                whileHover={{ y: -8 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                className="transition-transform"
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
+            {filteredProducts.length === 0 ? (
+              <div className="col-span-4 text-center text-gray-500">
+                No products in this category.
+              </div>
+            ) : (
+              filteredProducts.map((product) => (
+                <motion.div
+                  key={product._id}
+                  whileHover={{ y: -8 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="transition-transform"
+                >
+                  <ProductCard product={product} />
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       </motion.section>
