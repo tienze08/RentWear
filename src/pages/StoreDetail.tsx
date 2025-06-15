@@ -5,16 +5,21 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { Product, Store } from "@/lib/types";
 import ApiConstants from "@/lib/api";
 import axiosInstance from "@/lib/axiosInstance";
+import { useAuth } from "@/components/contexts/AuthContext";
+import { FeedbackSection } from "@/components/feedback/FeedbackSection";
 
 const StoreDetail = () => {
   const { storeId } = useParams<{ storeId: string }>();
   const [store, setStore] = useState<Store | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasPayment, setHasPayment] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log("storeId", storeId);
         const storeResponse = await axiosInstance.get(
           ApiConstants.GET_STORE_BY_ID(storeId || "")
         );
@@ -29,15 +34,33 @@ const StoreDetail = () => {
         );
         const products = productsResponse.data;
         setProducts(products);
+
+        // Kiểm tra xem khách hàng đã thuê sản phẩm từ store đó hay chưa
+        if (user?._id) {
+          const paymentsResponse = await axiosInstance.get(
+            ApiConstants.GET_CUSTOMER_PAYMENTS(user._id)
+          );
+          const rentals = paymentsResponse.data.flatMap((payment: any) => payment.rentals);
+          console.log("rentals", rentals);
+          const hasPaymentToStore = paymentsResponse.data.some(
+            (payment: any) => {
+              return rentals.some((rental: any) => {
+                return rental.storeId === storeId && payment.status === "COMPLETED";
+              });
+            }
+          );
+          setHasPayment(hasPaymentToStore);
+        }
       } catch (error) {
         console.error("Error fetching store details:", error);
         setStore(null);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-    setLoading(false);
-  }, [storeId]);
+  }, [storeId, user?._id]);
 
   if (loading) {
     return (
@@ -102,19 +125,18 @@ const StoreDetail = () => {
           </div>
         </div>
 
-        {/* Store Products */}
         <h2 className="text-2xl font-bold text-fashion-DEFAULT mb-6">
           Products from {store.storeName}
         </h2>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
             {products.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-white rounded-lg shadow-md">
+          <div className="text-center py-12 bg-white rounded-lg shadow-md mb-12">
             <h3 className="text-xl font-medium mb-2">No products available</h3>
             <p className="text-fashion-muted">
               This store doesn't have any products available for rent at the
@@ -128,6 +150,9 @@ const StoreDetail = () => {
             </Link>
           </div>
         )}
+
+        {/* Feedback Section */}
+        <FeedbackSection storeId={store._id} hasPayment={hasPayment} />
       </div>
     </Layout>
   );
