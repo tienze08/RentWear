@@ -561,7 +561,7 @@ const MyStore = () => {
                       required
                     />
                   </div>
-<!--                   <div className="space-y-2">
+                  <div className="space-y-2">
                     <Label
                       htmlFor="rentalPrice"
                       className="text-sm font-medium"
@@ -582,8 +582,9 @@ const MyStore = () => {
                       className="w-full"
                       min="0"
                       required
-                    /> -->
-                  <div className="flex justify-end gap-4 pt-4 border-t">
+                    />
+                  </div>
+                  {/* <div className="flex justify-end gap-4 pt-4 border-t">
                     <Button
                       type="button"
                       variant="outline"
@@ -598,7 +599,7 @@ const MyStore = () => {
                     >
                       {loading ? "Processing..." : "Add Product"}
                     </Button>
-                  </div>
+                  </div> */}
 
                   <div className="space-y-2">
                     <Label htmlFor="category" className="text-sm font-medium">
