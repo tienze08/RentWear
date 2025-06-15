@@ -19,6 +19,8 @@ const ApiConstants = {
   RENTALS: `${BASE_URL}/rentals`,
   FORGOT_PASSWORD: `${BASE_URL}/auth/forgot-password`,
   RESET_PASSWORD: `${BASE_URL}/auth/reset-password`,
+
+  GET_CUSTOMERS: `${BASE_URL}/users/customers`,
 } as const;
 
 export default ApiConstants;

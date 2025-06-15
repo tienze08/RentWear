@@ -5,6 +5,7 @@ export interface User {
   username: string;
   email: string;
   role: "CUSTOMER" | "STORE" | "ADMIN";
+  status: "ACTIVE" | "INACTIVE" | "BANNED";
   avatar?: string;
   storeInfo?: {
     storeName: string;
