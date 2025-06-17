@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Star, User as UserIcon } from "lucide-react";
+import { Flag, Star, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import axiosInstance from "@/lib/axiosInstance";
 import ApiConstants from "@/lib/api";
+import { ReportModal } from "../report/ReportModel";
 
 interface Feedback {
     _id: string;
@@ -32,6 +33,23 @@ export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hoveredRating, setHoveredRating] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [reportModal, setReportModal] = useState<{
+        isOpen: boolean;
+        targetId: string;
+        targetName: string;
+    }>({
+        isOpen: false,
+        targetId: "",
+        targetName: "",
+    });
+
+    const handleReportUser = (userId: string, userName: string) => {
+        setReportModal({
+            isOpen: true,
+            targetId: userId,
+            targetName: userName,
+        });
+    };
 
     useEffect(() => {
         fetchFeedbacks();
@@ -273,6 +291,21 @@ export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
                                             <span className="text-sm text-gray-500 ml-1">
                                                 {feedback.rating}.0
                                             </span>
+
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() =>
+                                                    handleReportUser(
+                                                        feedback._id,
+                                                        feedback.customerId
+                                                            .username
+                                                    )
+                                                }
+                                                className="text-red-500 hover:text-red-600 hover:bg-red-50 p-1 h-auto"
+                                            >
+                                                <Flag className="w-3 h-3" />
+                                            </Button>
                                         </div>
                                     </div>
                                     <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
@@ -284,6 +317,22 @@ export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
                     </div>
                 )}
             </div>
+
+            <ReportModal
+                isOpen={reportModal.isOpen}
+                onClose={() =>
+                    setReportModal({
+                        isOpen: false,
+                        targetId: "",
+                        targetName: "",
+                    })
+                }
+                targetId={reportModal.targetId}
+                targetName={reportModal.targetName}
+                targetType="user"
+                reporterType="shop"
+                reporterName="Shop Owner" // This would come from shop context
+            />
         </div>
     );
 };

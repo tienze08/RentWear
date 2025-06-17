@@ -7,155 +7,193 @@ import ApiConstants from "@/lib/api";
 import axiosInstance from "@/lib/axiosInstance";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { FeedbackSection } from "@/components/feedback/FeedbackSection";
+import { ReportModal } from "@/components/report/ReportModel";
+import { Button } from "@/components/ui/button";
+import { Flag } from "lucide-react";
 
 const StoreDetail = () => {
-  const { storeId } = useParams<{ storeId: string }>();
-  const [store, setStore] = useState<Store | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [hasPayment, setHasPayment] = useState(false);
-  const { user } = useAuth();
+    const { storeId } = useParams<{ storeId: string }>();
+    const [store, setStore] = useState<Store | null>(null);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [hasPayment, setHasPayment] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
+    const { user } = useAuth();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log("storeId", storeId);
-        const storeResponse = await axiosInstance.get(
-          ApiConstants.GET_STORE_BY_ID(storeId || "")
-        );
-        const store = {
-          ...storeResponse.data.storeInfo,
-          _id: storeResponse.data._id,
-        };
-        setStore(store);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                console.log("storeId", storeId);
+                const storeResponse = await axiosInstance.get(
+                    ApiConstants.GET_STORE_BY_ID(storeId || "")
+                );
+                const store = {
+                    ...storeResponse.data.storeInfo,
+                    _id: storeResponse.data._id,
+                };
+                setStore(store);
 
-        const productsResponse = await axiosInstance.get(
-          ApiConstants.GET_PRODUCTS_OF_STORE(storeId || "")
-        );
-        const products = productsResponse.data;
-        setProducts(products);
+                const productsResponse = await axiosInstance.get(
+                    ApiConstants.GET_PRODUCTS_OF_STORE(storeId || "")
+                );
+                const products = productsResponse.data;
+                setProducts(products);
 
-        // Kiểm tra xem khách hàng đã thuê sản phẩm từ store đó hay chưa
-        if (user?._id) {
-          const paymentsResponse = await axiosInstance.get(
-            ApiConstants.GET_CUSTOMER_PAYMENTS(user._id)
-          );
-          const rentals = paymentsResponse.data.flatMap((payment: any) => payment.rentals);
-          console.log("rentals", rentals);
-          const hasPaymentToStore = paymentsResponse.data.some(
-            (payment: any) => {
-              return rentals.some((rental: any) => {
-                return rental.storeId === storeId && payment.status === "COMPLETED";
-              });
+                // Kiểm tra xem khách hàng đã thuê sản phẩm từ store đó hay chưa
+                if (user?._id) {
+                    const paymentsResponse = await axiosInstance.get(
+                        ApiConstants.GET_CUSTOMER_PAYMENTS(user._id)
+                    );
+                    const rentals = paymentsResponse.data.flatMap(
+                        (payment: any) => payment.rentals
+                    );
+                    console.log("rentals", rentals);
+                    const hasPaymentToStore = paymentsResponse.data.some(
+                        (payment: any) => {
+                            return rentals.some((rental: any) => {
+                                return (
+                                    rental.storeId === storeId &&
+                                    payment.status === "COMPLETED"
+                                );
+                            });
+                        }
+                    );
+                    setHasPayment(hasPaymentToStore);
+                }
+            } catch (error) {
+                console.error("Error fetching store details:", error);
+                setStore(null);
+            } finally {
+                setLoading(false);
             }
-          );
-          setHasPayment(hasPaymentToStore);
-        }
-      } catch (error) {
-        console.error("Error fetching store details:", error);
-        setStore(null);
-      } finally {
-        setLoading(false);
-      }
-    };
+        };
 
-    fetchData();
-  }, [storeId, user?._id]);
+        fetchData();
+    }, [storeId, user?._id]);
 
-  if (loading) {
+    if (loading) {
+        return (
+            <Layout>
+                <div className="container mx-auto px-4 py-12 flex justify-center">
+                    <div className="animate-pulse flex flex-col items-center">
+                        <div className="h-8 w-64 bg-gray-200 rounded mb-4"></div>
+                        <div className="h-4 w-48 bg-gray-200 rounded"></div>
+                    </div>
+                </div>
+            </Layout>
+        );
+    }
+
+    if (!store) {
+        return (
+            <Layout>
+                <div className="container mx-auto px-4 py-12 text-center">
+                    <h1 className="text-2xl font-bold text-fashion-DEFAULT mb-4">
+                        Store Not Found
+                    </h1>
+                    <p className="text-fashion-muted mb-8">
+                        The store you're looking for doesn't exist or has been
+                        removed.
+                    </p>
+                    <Link
+                        to="/stores"
+                        className="px-6 py-2 bg-fashion-accent text-white rounded-lg hover:bg-fashion-accent/90 transition"
+                    >
+                        Browse All Stores
+                    </Link>
+                </div>
+            </Layout>
+        );
+    }
+
     return (
-      <Layout>
-        <div className="container mx-auto px-4 py-12 flex justify-center">
-          <div className="animate-pulse flex flex-col items-center">
-            <div className="h-8 w-64 bg-gray-200 rounded mb-4"></div>
-            <div className="h-4 w-48 bg-gray-200 rounded"></div>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+        <Layout>
+            <div className="container mx-auto px-4 py-8">
+                {/* Store Info */}
+                <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                        <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0 border-2 border-fashion-light">
+                            <img
+                                src={store.logoUrl}
+                                alt={store.storeName}
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
 
-  if (!store) {
-    return (
-      <Layout>
-        <div className="container mx-auto px-4 py-12 text-center">
-          <h1 className="text-2xl font-bold text-fashion-DEFAULT mb-4">
-            Store Not Found
-          </h1>
-          <p className="text-fashion-muted mb-8">
-            The store you're looking for doesn't exist or has been removed.
-          </p>
-          <Link
-            to="/stores"
-            className="px-6 py-2 bg-fashion-accent text-white rounded-lg hover:bg-fashion-accent/90 transition"
-          >
-            Browse All Stores
-          </Link>
-        </div>
-      </Layout>
-    );
-  }
+                        <div className="flex-1">
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-2">
+                                        {store.storeName}
+                                    </h1>
+                                    <p className="text-fashion-muted">
+                                        {store.description}
+                                    </p>
 
-  return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
-        {/* Store Info */}
-        <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-            <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0 border-2 border-fashion-light">
-              <img
-                src={store.logoUrl}
-                alt={store.storeName}
-                className="w-full h-full object-cover"
-              />
+                                    {store.featured && (
+                                        <span className="mt-3 inline-block bg-dashboard-light-purple text-fashion-accent px-3 py-1 rounded-full text-xs font-medium">
+                                            Featured Store
+                                        </span>
+                                    )}
+                                </div>
+
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setShowReportModal(true)}
+                                    className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                    <Flag className="w-4 h-4" />
+                                    Report Shop
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 className="text-2xl font-bold text-fashion-DEFAULT mb-6">
+                    Products from {store.storeName}
+                </h2>
+
+                {products.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+                        {products.map((product) => (
+                            <ProductCard key={product._id} product={product} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-12 bg-white rounded-lg shadow-md mb-12">
+                        <h3 className="text-xl font-medium mb-2">
+                            No products available
+                        </h3>
+                        <p className="text-fashion-muted">
+                            This store doesn't have any products available for
+                            rent at the moment.
+                        </p>
+                        <Link
+                            to="/stores"
+                            className="mt-4 inline-block px-6 py-2 bg-fashion-accent text-white rounded-lg hover:bg-fashion-accent/90 transition"
+                        >
+                            Browse Other Stores
+                        </Link>
+                    </div>
+                )}
+
+                {/* Feedback Section */}
+                <FeedbackSection storeId={store._id} hasPayment={hasPayment} />
+
+                <ReportModal
+                    isOpen={showReportModal}
+                    onClose={() => setShowReportModal(false)}
+                    targetId={store._id}
+                    targetName={store.storeName}
+                    targetType="shop"
+                    reporterType="user"
+                    reporterName="Current User" // This would come from auth context
+                />
             </div>
-
-            <div>
-              <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-2">
-                {store.storeName}
-              </h1>
-              <p className="text-fashion-muted">{store.description}</p>
-
-              {store.featured && (
-                <span className="mt-3 inline-block bg-dashboard-light-purple text-fashion-accent px-3 py-1 rounded-full text-xs font-medium">
-                  Featured Store
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <h2 className="text-2xl font-bold text-fashion-DEFAULT mb-6">
-          Products from {store.storeName}
-        </h2>
-
-        {products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-            {products.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 bg-white rounded-lg shadow-md mb-12">
-            <h3 className="text-xl font-medium mb-2">No products available</h3>
-            <p className="text-fashion-muted">
-              This store doesn't have any products available for rent at the
-              moment.
-            </p>
-            <Link
-              to="/stores"
-              className="mt-4 inline-block px-6 py-2 bg-fashion-accent text-white rounded-lg hover:bg-fashion-accent/90 transition"
-            >
-              Browse Other Stores
-            </Link>
-          </div>
-        )}
-
-        {/* Feedback Section */}
-        <FeedbackSection storeId={store._id} hasPayment={hasPayment} />
-      </div>
-    </Layout>
-  );
+        </Layout>
+    );
 };
 
 export default StoreDetail;
