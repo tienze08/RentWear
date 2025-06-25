@@ -16,23 +16,27 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const { user } = useAuth();
   const inCart = isInCart(product._id);
 
-  // const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   if (!user) {
-  //     alert("Hãy đăng nhập để thêm sản phẩm vào giỏ hàng.");
-  //     return;
-  //   }
-  //   try {
-  //     await createRental({
-  //       productId: product._id,
-  //       rentalDays: 3,
-  //       userId: user._id,
-  //     });
-  //     addToCart(product, 3); // Add to cart with default rental days
-  //   } catch (error) {
-  //     console.error("Failed to add to cart:", error);
-  //   }
-  // };
+  const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!user) {
+      alert("Hãy đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      return;
+    }
+    try {
+      await createRental({
+          productId: product._id,
+          customerId: user._id,
+          storeId: product.storeId,
+          rentalStart: new Date().toISOString(),
+          rentalEnd: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+          totalPrice: product.rentalPrice * 3,
+          depositPaid: false,
+      });
+      addToCart(product, 3); 
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -69,12 +73,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               ? "border-blueberry text-blueberry"
               : "bg-blueberry hover:bg-blue-950 text-white"
           }`}
-          onClick={(e) => {
-            e.preventDefault();
-            if (!inCart) {
-              addToCart(product, 3); 
-            }
-          }}
+          onClick={handleAddToCart}
           disabled={!user} 
         >
           {inCart ? "In Cart" : "Quick Add to Cart"}

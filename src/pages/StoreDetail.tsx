@@ -7,6 +7,8 @@ import ApiConstants from "@/lib/api";
 import axiosInstance from "@/lib/axiosInstance";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { FeedbackSection } from "@/components/feedback/FeedbackSection";
+import { useChat } from "@/components/contexts/ChatContext";
+import { ChatWindow } from "@/components/chat/ChatWindow";
 
 const StoreDetail = () => {
   const { storeId } = useParams<{ storeId: string }>();
@@ -15,6 +17,8 @@ const StoreDetail = () => {
   const [loading, setLoading] = useState(true);
   const [hasPayment, setHasPayment] = useState(false);
   const { user } = useAuth();
+  const [showChat, setShowChat] = useState(false);
+  const { startConversation, activeConversationId } = useChat();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,12 +44,16 @@ const StoreDetail = () => {
           const paymentsResponse = await axiosInstance.get(
             ApiConstants.GET_CUSTOMER_PAYMENTS(user._id)
           );
-          const rentals = paymentsResponse.data.flatMap((payment: any) => payment.rentals);
+          const rentals = paymentsResponse.data.flatMap(
+            (payment: any) => payment.rentals
+          );
           console.log("rentals", rentals);
           const hasPaymentToStore = paymentsResponse.data.some(
             (payment: any) => {
               return rentals.some((rental: any) => {
-                return rental.storeId === storeId && payment.status === "COMPLETED";
+                return (
+                  rental.storeId === storeId && payment.status === "COMPLETED"
+                );
               });
             }
           );
@@ -121,6 +129,18 @@ const StoreDetail = () => {
                   Featured Store
                 </span>
               )}
+              {/* Nút nhắn tin */}
+              {user?.role === "CUSTOMER" && (
+                <button
+                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                  onClick={async () => {
+                    await startConversation(store._id);
+                    setShowChat(true);
+                  }}
+                >
+                  Nhắn tin với cửa hàng
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -153,6 +173,16 @@ const StoreDetail = () => {
 
         {/* Feedback Section */}
         <FeedbackSection storeId={store._id} hasPayment={hasPayment} />
+
+        {/* Hiển thị ChatWindow nếu showChat true */}
+        {showChat && activeConversationId && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+            <ChatWindow
+              conversationId={activeConversationId}
+              onClose={() => setShowChat(false)}
+            />
+          </div>
+        )}
       </div>
     </Layout>
   );

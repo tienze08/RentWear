@@ -11,6 +11,7 @@ export interface User {
     storeName: string;
     address: string;
     phone: string;
+    logoUrl?: string;
   };
   phone?: string;
   address?: string;
