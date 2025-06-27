@@ -10,6 +10,7 @@ import { ReportModal } from "../report/ReportModel";
 interface Feedback {
     _id: string;
     customerId: {
+        _id: string;
         username: string;
         email: string;
     };
@@ -297,7 +298,7 @@ export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
                                                 size="sm"
                                                 onClick={() =>
                                                     handleReportUser(
-                                                        feedback._id,
+                                                        feedback.customerId._id,
                                                         feedback.customerId
                                                             .username
                                                     )
@@ -331,7 +332,7 @@ export const FeedbackSection: React.FC<FeedbackSectionProps> = ({
                 targetName={reportModal.targetName}
                 targetType="user"
                 reporterType="shop"
-                reporterName="Shop Owner" // This would come from shop context
+                reporterName="Shop Owner"
             />
         </div>
     );

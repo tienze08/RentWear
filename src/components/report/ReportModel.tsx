@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Flag } from "lucide-react";
+import axiosInstance from "@/lib/axiosInstance";
+import ApiConstants from "@/lib/api";
 
 interface ReportModalProps {
     isOpen: boolean;
@@ -34,8 +36,6 @@ export const ReportModal = ({
     targetId,
     targetName,
     targetType,
-    reporterType,
-    reporterName,
 }: ReportModalProps) => {
     const [reason, setReason] = useState("");
     const [description, setDescription] = useState("");
@@ -76,37 +76,29 @@ export const ReportModal = ({
         setIsSubmitting(true);
 
         try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            const newReport = {
-                id: Date.now().toString(),
-                reporterId: "current-user-id",
-                reporterName,
-                reporterType,
+            /* 🔗 Gọi BE tạo report */
+            await axiosInstance.post(ApiConstants.CREATE_REPORT, {
                 targetId,
-                targetType,
-                targetName,
                 reason,
                 description,
-                createdAt: new Date().toISOString(),
-                status: "pending" as const,
-            };
-
-            console.log("Report submitted:", newReport);
-
-            toast({
-                title: "Report Submitted",
-                description: `Your report against ${targetName} has been submitted successfully.`,
             });
 
+            toast({
+                title: "Report submitted",
+                description: `Your report against ${targetName} has been sent.`,
+            });
+
+            /* Reset form & đóng modal */
             setReason("");
             setDescription("");
             onClose();
-        } catch (error) {
+        } catch (err: any) {
+            console.error("submit-report-error", err);
             toast({
                 title: "Error",
-                description: "Failed to submit report. Please try again.",
+                description:
+                    err?.response?.data?.message ??
+                    "Failed to submit report. Please try again.",
                 variant: "destructive",
             });
         } finally {

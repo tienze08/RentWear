@@ -27,10 +27,94 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import BanConfirmationDialog from "@/components/admin/BanConfirmationDialog";
+import { useToast } from "@/hooks/use-toast";
+
+type Complaint = {
+    id: number;
+    reporter: string;
+    reason: string;
+    description: string;
+    date: string;
+    severity: "Low" | "Medium" | "High";
+};
+
+const userComplaints: Record<string, Complaint[]> = {
+    "1": [
+        {
+            id: 1,
+            reporter: "Store Manager",
+            reason: "Inappropriate behavior",
+            description:
+                "Customer was rude to staff and used offensive language during equipment pickup.",
+            date: "2025-06-10",
+            severity: "Medium" as const,
+        },
+        {
+            id: 2,
+            reporter: "Another Customer",
+            reason: "Damaged equipment",
+            description:
+                "Left rental equipment in poor condition, did not follow return guidelines.",
+            date: "2025-06-08",
+            severity: "High" as const,
+        },
+    ],
+    "2": [
+        {
+            id: 3,
+            reporter: "System Alert",
+            reason: "Multiple late returns",
+            description:
+                "User has been consistently late with equipment returns, affecting other customers.",
+            date: "2025-06-09",
+            severity: "Low" as const,
+        },
+    ],
+};
 
 const Users = () => {
     const [users, setUsers] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [banDialogOpen, setBanDialogOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<{
+        id: number;
+        name: string;
+    } | null>(null);
+    const { toast } = useToast();
+
+    const handleBanUser = (reason: string) => {
+        if (selectedUser) {
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user.id === selectedUser.id
+                        ? { ...user, status: "Banned" }
+                        : user
+                )
+            );
+            toast({
+                title: "User Banned",
+                description: `${selectedUser.name} has been banned. Reason: ${reason}`,
+            });
+        }
+    };
+
+    const handleUnbanUser = (userId: number, userName: string) => {
+        setUsers((prevUsers) =>
+            prevUsers.map((user) =>
+                user.id === userId ? { ...user, status: "Active" } : user
+            )
+        );
+        toast({
+            title: "User Unbanned",
+            description: `${userName} has been unbanned and reactivated.`,
+        });
+    };
+
+    const openBanDialog = (userId: number, userName: string) => {
+        setSelectedUser({ id: userId, name: userName });
+        setBanDialogOpen(true);
+    };
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -188,7 +272,10 @@ const Users = () => {
                                                         <MoreHorizontal className="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
+                                                <DropdownMenuContent
+                                                    align="end"
+                                                    className="bg-white"
+                                                >
                                                     <DropdownMenuLabel>
                                                         Actions
                                                     </DropdownMenuLabel>
@@ -197,14 +284,46 @@ const Users = () => {
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     {user.status ===
-                                                    "Active" ? (
-                                                        <DropdownMenuItem className="text-yellow-600">
-                                                            Deactivate user
+                                                    "Banned" ? (
+                                                        <DropdownMenuItem
+                                                            className="text-green-600"
+                                                            onClick={() =>
+                                                                handleUnbanUser(
+                                                                    user.id,
+                                                                    user.name
+                                                                )
+                                                            }
+                                                        >
+                                                            Unban user
                                                         </DropdownMenuItem>
                                                     ) : (
-                                                        <DropdownMenuItem className="text-green-600">
-                                                            Activate user
-                                                        </DropdownMenuItem>
+                                                        <>
+                                                            {user.status ===
+                                                                "Active" && (
+                                                                <DropdownMenuItem className="text-yellow-600">
+                                                                    Deactivate
+                                                                    user
+                                                                </DropdownMenuItem>
+                                                            )}
+                                                            {user.status ===
+                                                                "Inactive" && (
+                                                                <DropdownMenuItem className="text-green-600">
+                                                                    Activate
+                                                                    user
+                                                                </DropdownMenuItem>
+                                                            )}
+                                                            <DropdownMenuItem
+                                                                className="text-red-600"
+                                                                onClick={() =>
+                                                                    openBanDialog(
+                                                                        user.id,
+                                                                        user.name
+                                                                    )
+                                                                }
+                                                            >
+                                                                Ban user
+                                                            </DropdownMenuItem>
+                                                        </>
                                                     )}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
@@ -222,6 +341,20 @@ const Users = () => {
                     </div>
                 </div>
             </Card>
+
+            <BanConfirmationDialog
+                open={banDialogOpen}
+                onOpenChange={setBanDialogOpen}
+                onConfirm={handleBanUser}
+                title="Ban User"
+                description="Review the complaints below before deciding to ban {entityName}. This action will prevent them from accessing the platform."
+                entityName={selectedUser?.name || ""}
+                complaints={
+                    selectedUser
+                        ? userComplaints[String(selectedUser.id)] || []
+                        : []
+                }
+            />
         </div>
     );
 };

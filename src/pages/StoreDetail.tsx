@@ -179,7 +179,6 @@ const StoreDetail = () => {
                     </div>
                 )}
 
-                {/* Feedback Section */}
                 <FeedbackSection storeId={store._id} hasPayment={hasPayment} />
 
                 <ReportModal
@@ -189,7 +188,7 @@ const StoreDetail = () => {
                     targetName={store.storeName}
                     targetType="shop"
                     reporterType="user"
-                    reporterName="Current User" // This would come from auth context
+                    reporterName="Current User"
                 />
             </div>
         </Layout>
