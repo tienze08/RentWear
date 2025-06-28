@@ -36,6 +36,10 @@ const ApiConstants = {
   GET_ALL_REPORTS: `${BASE_URL}/reports`, 
   GET_REPORTS_BY_TARGET: (userId: string) =>
     `${BASE_URL}/reports/target/${userId}`, 
+
+  BAN_USER: (id: string)   => `${BASE_URL}/users/ban/${id}`,
+  UNBAN_USER: (id: string) => `${BASE_URL}/users/unban/${id}`,
+
 } as const;
 
 export default ApiConstants;

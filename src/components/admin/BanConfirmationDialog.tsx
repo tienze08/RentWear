@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Complaint {
-    id: number;
+    id: string;
     reporter: string;
     reason: string;
     description: string;
@@ -86,10 +86,13 @@ const BanConfirmationDialog = ({
                         <Label className="text-sm font-medium">
                             Complaints/Reports ({complaints.length})
                         </Label>
-                        <ScrollArea className="h-40 w-full rounded-md border p-3">
+                        <ScrollArea className="h-40 w-full rounded-md border p-3 border-b border-sidebar-border">
                             <div className="space-y-3">
                                 {complaints.map((complaint) => (
-                                    <Card key={complaint.id} className="p-3">
+                                    <Card
+                                        key={complaint.id}
+                                        className="p-3 border-b border-sidebar-border"
+                                    >
                                         <div className="flex items-start justify-between mb-2">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-sm font-medium">
@@ -133,12 +136,15 @@ const BanConfirmationDialog = ({
                         placeholder="Please provide a detailed reason for your decision to ban this entity..."
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
-                        className="min-h-[100px]"
+                        className="min-h-[100px] border-b border-sidebar-border"
                     />
                 </div>
 
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={handleCancel}>
+                    <AlertDialogCancel
+                        onClick={handleCancel}
+                        className="border-b border-sidebar-border"
+                    >
                         Don't Ban
                     </AlertDialogCancel>
                     <AlertDialogAction

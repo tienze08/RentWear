@@ -33,9 +33,8 @@ import { User } from "@/lib/types";
 import BanConfirmationDialog from "@/components/admin/BanConfirmationDialog";
 import { useToast } from "@/hooks/use-toast";
 
-/** Helper type for shop complaints */
 type Complaint = {
-    id: number;
+    id: string;
     reporter: string;
     reason: string;
     description: string;
@@ -43,80 +42,76 @@ type Complaint = {
     severity: "Low" | "Medium" | "High";
 };
 
-/** Static mock complaints, indexed by shop _id (string) */
-const shopComplaints: Record<string, Complaint[]> = {
-    "1": [
-        {
-            id: 1,
-            reporter: "Customer Review",
-            reason: "Poor service quality",
-            description:
-                "Multiple customers reported receiving damaged equipment and poor customer service.",
-            date: "2025-06-10",
-            severity: "High",
-        },
-    ],
-    "2": [
-        {
-            id: 2,
-            reporter: "Partner Report",
-            reason: "Policy violations",
-            description:
-                "Shop has been consistently violating platform policies regarding pricing and availability.",
-            date: "2025-06-09",
-            severity: "Medium",
-        },
-        {
-            id: 3,
-            reporter: "System Alert",
-            reason: "Late inventory updates",
-            description:
-                "Frequently fails to update inventory status, causing booking conflicts.",
-            date: "2025-06-08",
-            severity: "Low",
-        },
-    ],
+type ReportPayload = {
+    _id: string;
+    reporter?: {
+        username: string;
+    };
+    reason: string;
+    description: string;
+    createdAt: string;
 };
 
 const RentalShop = () => {
     const [stores, setStores] = useState<User[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [banDialogOpen, setBanDialogOpen] = useState(false);
+    const [shopComplaints, setShopComplaints] = useState<
+        Record<string, Complaint[]>
+    >({});
     const [selectedShop, setSelectedShop] = useState<{
         id: string;
         name: string;
     } | null>(null);
     const { toast } = useToast();
 
-    /* ------------------------ CRUD helpers ------------------------ */
-    const handleBanShop = (reason: string) => {
+    const banEntity = (id: string, reason: string) =>
+        axiosInstance.patch(ApiConstants.BAN_USER(id), { reason });
+
+    const unbanEntity = (id: string) =>
+        axiosInstance.patch(ApiConstants.UNBAN_USER(id));
+
+    const handleBanShop = async (reason: string) => {
         if (!selectedShop) return;
+        const { id } = selectedShop;
 
-        setStores((prev) =>
-            prev.map((s) =>
-                s._id === selectedShop.id
-                    ? { ...s, status: "BANNED" as const }
-                    : s
-            )
-        );
+        setBanDialogOpen(false); // đóng dialog trước
+        setSelectedShop(null);
 
-        toast({
-            title: "Shop Banned",
-            description: `${selectedShop.name} has been banned. Reason: ${reason}`,
-        });
+        try {
+            await banEntity(id, reason);
+            setStores((prev) =>
+                prev.map((u) =>
+                    u._id === id ? { ...u, status: "BLOCKED" } : u
+                )
+            );
+            toast({ title: "User blocked", description: reason });
+        } catch (err) {
+            toast({
+                title: "Ban failed",
+                description: String(err),
+                variant: "destructive",
+            });
+        }
     };
 
-    const handleUnbanShop = (shopId: string, shopName: string) => {
-        setStores((prev) =>
-            prev.map((s) =>
-                s._id === shopId ? { ...s, status: "ACTIVE" as const } : s
-            )
-        );
-
-        toast({
-            title: "Shop Unbanned",
-            description: `${shopName} has been unbanned and reactivated.`,
-        });
+    const handleUnbanShop = async (id: string, name: string) => {
+        try {
+            await unbanEntity(id);
+            setStores((prev) =>
+                prev.map((u) => (u._id === id ? { ...u, status: "ACTIVE" } : u))
+            );
+            toast({
+                title: "User unbanned",
+                description: `${name} reactivated`,
+            });
+        } catch (err) {
+            toast({
+                title: "Unban failed",
+                description: String(err),
+                variant: "destructive",
+            });
+        }
     };
 
     const openBanDialog = (shopId: string, shopName: string) => {
@@ -136,6 +131,50 @@ const RentalShop = () => {
         })();
     }, []);
 
+    useEffect(() => {
+        if (!banDialogOpen || !selectedShop) return;
+
+        (async () => {
+            console.log("[fetchReports] for", selectedShop.id);
+            try {
+                const res = await fetch(
+                    ApiConstants.GET_REPORTS_BY_TARGET(selectedShop.id),
+                    {
+                        credentials: "include",
+                        headers: { "Content-Type": "application/json" },
+                    }
+                );
+                if (!res.ok) throw new Error(res.statusText);
+                const data: ReportPayload[] = await res.json();
+                console.log("[fetchReports] data →", data);
+
+                const complaints = data.map((r) => ({
+                    id: r._id,
+                    reporter: r.reporter?.username || "Unknown",
+                    reason: r.reason,
+                    description: r.description,
+                    date: new Date(r.createdAt).toISOString().slice(0, 10),
+                    severity: "Medium" as const,
+                }));
+
+                setShopComplaints((prev) => ({
+                    ...prev,
+                    [selectedShop.id]: complaints,
+                }));
+            } catch (err) {
+                toast({
+                    title: "Không lấy được report",
+                    description: String(err),
+                    variant: "destructive",
+                });
+                setShopComplaints((prev) => ({
+                    ...prev,
+                    [selectedShop.id]: [],
+                }));
+            }
+        })();
+    }, [banDialogOpen, selectedShop, toast]);
+
     const filteredStores = stores.filter((s) =>
         (s.storeInfo?.storeName ?? "")
             .toLowerCase()
@@ -148,7 +187,7 @@ const RentalShop = () => {
                 return "border-green-500 text-green-600 bg-green-50";
             case "INACTIVE":
                 return "border-red-500 text-red-600 bg-red-50";
-            case "BANNED":
+            case "BLOCKED":
                 return "border-red-500 text-red-600 bg-red-50";
             default:
                 return "border-gray-500 text-gray-600 bg-gray-50";
@@ -268,7 +307,7 @@ const RentalShop = () => {
                                                     </DropdownMenuLabel>
                                                     <DropdownMenuSeparator />
                                                     {shop.status ===
-                                                    "BANNED" ? (
+                                                    "BLOCKED" ? (
                                                         <DropdownMenuItem
                                                             className="text-green-600"
                                                             onClick={() =>
