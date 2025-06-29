@@ -39,7 +39,11 @@ const ApiConstants = {
 
   BAN_USER: (id: string)   => `${BASE_URL}/users/ban/${id}`,
   UNBAN_USER: (id: string) => `${BASE_URL}/users/unban/${id}`,
-
+  //Chat
+  GET_USER_CONVERSATIONS: (userId: string) => `${BASE_URL}/chats/conversations/${userId}`,
+  GET_CONVERSATION_MESSAGES: (conversationId: string) =>
+    `${BASE_URL}/chats/messages/${conversationId}`,
+  CREATE_OR_GET_CONVERSATION: `${BASE_URL}/chats/conversation`,
 } as const;
 
 export default ApiConstants;
