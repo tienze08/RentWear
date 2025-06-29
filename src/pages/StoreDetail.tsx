@@ -194,7 +194,7 @@ const StoreDetail = () => {
           targetName={store.storeName}
           targetType="shop"
           reporterType="user"
-          reporterName={user?.name || "Current User"}
+          reporterName={user?.username || "Current User"}
         />
 
         {/* Chat Window */}
