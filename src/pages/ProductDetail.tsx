@@ -114,10 +114,6 @@ const ProductDetail = () => {
     );
   }
 
-  // const handleAddToCart = () => {
-  //   addToCart(product, rentalDays);
-  // };
-
   const handleAddRental = async () => {
     if (!user) {
       console.error("Bạn phải đăng nhập để thực hiện giao dịch này.");

@@ -1,24 +1,36 @@
-// import React from "react";
-// import { Layout } from "@/components/layout/Layout";
-// import { ChatWindow } from "@/components/chat/ChatWindow";
-// import { useAuth } from "@/components/contexts/AuthContext";
-// import { Navigate } from "react-router-dom";
+import React, { useState } from "react";
+import { ChatList } from "@/components/chat/ChatList";
+import { ChatWindow } from "@/components/chat/ChatWindow";
+import { useChat } from "@/components/contexts/ChatContext";
+import { Layout } from "@/components/layout/Layout";
 
-// const Chat = () => {
-//   const { isAuthenticated } = useAuth();
+const ChatPage: React.FC = () => {
+  const { activeConversationId, setActiveConversationId } = useChat();
+  const [selectedId, setSelectedId] = useState<string | null>(
+    activeConversationId
+  );
 
-//   if (!isAuthenticated) {
-//     return <Navigate to="/login" />;
-//   }
+  const handleSelect = (id: string) => {
+    setActiveConversationId(id);
+    setSelectedId(id);
+  };
 
-//   return (
-//     <Layout>
-//       <div className="container mx-auto px-4 py-8">
-//         <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-8">Chat</h1>
-//         <ChatWindow />
-//       </div>
-//     </Layout>
-//   );
-// };
+  return (
+    <Layout>
+      <div className="flex h-[80vh] bg-gray-50 rounded-lg shadow-lg overflow-hidden max-w-5xl mx-auto">
+        <ChatList onSelect={handleSelect} selectedId={selectedId} />
+        <div className="flex-1 flex items-center justify-center bg-white">
+          {selectedId ? (
+            <ChatWindow conversationId={selectedId} />
+          ) : (
+            <div className="text-gray-400 text-lg">
+              Chọn một cuộc trò chuyện để bắt đầu
+            </div>
+          )}
+        </div>
+      </div>
+    </Layout>
+  );
+};
 
-// export default Chat;
+export default ChatPage;

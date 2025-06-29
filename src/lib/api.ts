@@ -32,6 +32,11 @@ const ApiConstants = {
   FEEDBACK: `${BASE_URL}/feedbacks`,
   GET_STORE_FEEDBACK: (storeId: string) =>
     `${BASE_URL}/feedbacks/store/${storeId}`,
+  //Chat
+  GET_USER_CONVERSATIONS: (userId: string) => `${BASE_URL}/chats/conversations/${userId}`,
+  GET_CONVERSATION_MESSAGES: (conversationId: string) =>
+    `${BASE_URL}/chats/messages/${conversationId}`,
+  CREATE_OR_GET_CONVERSATION: `${BASE_URL}/chats/conversation`,
 } as const;
 
 export default ApiConstants;
