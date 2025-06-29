@@ -32,6 +32,13 @@ const ApiConstants = {
   FEEDBACK: `${BASE_URL}/feedbacks`,
   GET_STORE_FEEDBACK: (storeId: string) =>
     `${BASE_URL}/feedbacks/store/${storeId}`,
+    CREATE_REPORT: `${BASE_URL}/reports`, 
+  GET_ALL_REPORTS: `${BASE_URL}/reports`, 
+  GET_REPORTS_BY_TARGET: (userId: string) =>
+    `${BASE_URL}/reports/target/${userId}`, 
+
+  BAN_USER: (id: string)   => `${BASE_URL}/users/ban/${id}`,
+  UNBAN_USER: (id: string) => `${BASE_URL}/users/unban/${id}`,
   //Chat
   GET_USER_CONVERSATIONS: (userId: string) => `${BASE_URL}/chats/conversations/${userId}`,
   GET_CONVERSATION_MESSAGES: (conversationId: string) =>

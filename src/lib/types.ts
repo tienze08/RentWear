@@ -5,7 +5,7 @@ export interface User {
   username: string;
   email: string;
   role: "CUSTOMER" | "STORE" | "ADMIN";
-  status: "ACTIVE" | "INACTIVE" | "BANNED";
+  status: "ACTIVE" | "INACTIVE" | "BLOCKED";
   avatar?: string;
   storeInfo?: {
     storeName: string;
@@ -84,4 +84,12 @@ export interface UserContextType {
   updateUser: (data: UpdateUserFormData) => Promise<void>;
   changePassword: (data: ChangePasswordFormData) => Promise<void>;
   updateAvatar: (file: File) => Promise<AxiosResponse>;
+}
+
+export interface ReportPayload {
+  _id: string;
+  reporter: { username: string };
+  reason: string;
+  description: string;
+  createdAt: string;
 }
