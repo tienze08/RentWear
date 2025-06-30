@@ -178,7 +178,7 @@ const Login = () => {
                                     className="w-full bg-blueberry hover:bg-blue-950 text-white font-medium py-2 rounded-md shadow-md transition-colors"
                                     onClick={() =>
                                         (window.location.href =
-                                            "http://localhost:5000/api/auth/google")
+                                            "https://fasent-api.onrender.com/api/auth/google")
                                     }
                                     disabled={isLoading}
                                 >
