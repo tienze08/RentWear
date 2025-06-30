@@ -2,9 +2,11 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import NotificationsDropdown from "./NotificationsDropdown";
 
-// interface HeaderProps {}
+interface HeaderProps {
+    toggleSidebar: () => void;
+}
 
-const AdminHeader = () => {
+const AdminHeader = ({ toggleSidebar }: HeaderProps) => {
     return (
         <header className="sticky top-0 z-30 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
             <div className="flex-1 max-w-md">
