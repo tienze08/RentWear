@@ -28,11 +28,22 @@ const InputOTPGroup = React.forwardRef<
 ))
 InputOTPGroup.displayName = "InputOTPGroup"
 
+// Define the type for the OTPInputContext value
+interface OTPInputSlot {
+  char: string
+  hasFakeCaret: boolean
+  isActive: boolean
+}
+interface OTPInputContextValue {
+  slots: OTPInputSlot[]
+}
+
 const InputOTPSlot = React.forwardRef<
   React.ElementRef<"div">,
   React.ComponentPropsWithoutRef<"div"> & { index: number }
 >(({ index, className, ...props }, ref) => {
-  const inputOTPContext = React.useContext(OTPInputContext)
+  // Type assertion to fix TS18046
+  const inputOTPContext = React.useContext(OTPInputContext) as OTPInputContextValue
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index]
 
   return (
