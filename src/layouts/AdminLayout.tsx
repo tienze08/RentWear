@@ -15,7 +15,7 @@ const AdminLayout = () => {
     <div className="min-h-screen bg-gray-50">
       <AdminSidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       <div className={`transition-all duration-300 ${sidebarOpen ? 'pl-64' : 'pl-20'}`}>
-        <AdminHeader toggleSidebar={toggleSidebar} />
+        <AdminHeader />
         <main className="p-6">
           <Outlet />
         </main>
