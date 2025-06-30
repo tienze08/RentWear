@@ -1,4 +1,3 @@
-"use client";
 
 import type React from "react";
 import { useState } from "react";
@@ -6,7 +5,6 @@ import { useChat } from "../contexts/ChatContext";
 import { useAuth } from "../contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Input } from "../ui/input";
-import { Badge } from "../ui/badge";
 import { Search, MessageCircle, Clock } from "lucide-react";
 
 interface ChatListProps {
@@ -60,10 +58,10 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelect, selectedId }) => {
   });
 
   // Mock unread count (you can replace this with real data)
-  const getUnreadCount = (convId: string) => {
-    // This is mock data - replace with your actual unread logic
-    return Math.floor(Math.random() * 5);
-  };
+  // const getUnreadCount = (convId: string) => {
+  //   // This is mock data - replace with your actual unread logic
+  //   return Math.floor(Math.random() * 5);
+  // };
 
   return (
     <div className="w-80 bg-white border-r border-gray-200 h-full flex flex-col shadow-lg">
@@ -113,7 +111,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelect, selectedId }) => {
         <div className="py-2">
           {filteredConversations.map((conv) => {
             const other = getOther(conv);
-            const unreadCount = getUnreadCount(conv._id);
+            // const unreadCount = getUnreadCount(conv._id);
             const isSelected = selectedId === conv._id;
             const isOnline = Math.random() > 0.5; // Mock online status
 
