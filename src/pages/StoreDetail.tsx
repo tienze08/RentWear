@@ -48,9 +48,6 @@ const StoreDetail = () => {
           const paymentsResp = await axiosInstance.get(
             ApiConstants.GET_CUSTOMER_PAYMENTS(user._id)
           );
-          const allRentals = paymentsResp.data.flatMap(
-            (p: any) => p.rentals
-          );
           const paidForThisStore = paymentsResp.data.some((p: any) =>
             p.rentals.some(
               (r: any) =>
