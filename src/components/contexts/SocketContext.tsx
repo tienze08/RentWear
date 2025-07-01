@@ -20,7 +20,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (user) {
       // Initialize socket connection
-      const socketInstance = io("http://localhost:5000", {
+      const socketInstance = io("https://fasent-api.onrender.com", {
         auth: {
           token: user._id, // You might want to use a proper token here
         },
