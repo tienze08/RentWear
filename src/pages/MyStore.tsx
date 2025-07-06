@@ -10,14 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  BarChart3,
-  Package,
-  ShoppingBag,
-  MessageSquare,
-  DollarSign,
-} from "lucide-react";
-import StorePayouts from "@/pages/store/StorePayouts";
+import { BarChart3, Package, ShoppingBag, MessageSquare } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -297,7 +290,7 @@ const MyStore = () => {
 
         {/* Tabs Navigation */}
         <Tabs defaultValue="statistics" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger
               value="statistics"
               className="flex items-center gap-2 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 hover:bg-blue-50 transition"
@@ -318,13 +311,6 @@ const MyStore = () => {
             >
               <ShoppingBag className="w-4 h-4" />
               Đơn thuê
-            </TabsTrigger>
-            <TabsTrigger
-              value="payouts"
-              className="flex items-center gap-2 data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-700 hover:bg-indigo-50 transition"
-            >
-              <DollarSign className="w-4 h-4" />
-              Thu nhập
             </TabsTrigger>
             <TabsTrigger
               value="feedback"
@@ -518,11 +504,6 @@ const MyStore = () => {
                 </table>
               </div>
             </div>
-          </TabsContent>
-
-          {/* Payouts Tab */}
-          <TabsContent value="payouts">
-            <StorePayouts />
           </TabsContent>
 
           {/* Feedback Tab */}

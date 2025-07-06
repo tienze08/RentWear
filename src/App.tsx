@@ -31,7 +31,6 @@ import RentalForms from "./pages/admin/RentalForms";
 import Users from "./pages/admin/Users";
 import RentalShop from "./pages/admin/RentalShop";
 import Revenue from "./pages/admin/Revenue";
-import AdminPayouts from "./pages/admin/Payouts";
 import SystemSettings from "./pages/admin/SystemSettings";
 import { SocketProvider } from "./components/contexts/SocketContext";
 import { ChatProvider } from "./components/contexts/ChatContext";
@@ -97,7 +96,6 @@ const App = () => (
                         <Route path="users" element={<Users />} />
                         <Route path="rental-shop" element={<RentalShop />} />
                         <Route path="revenue" element={<Revenue />} />
-                        <Route path="payouts" element={<AdminPayouts />} />
                         <Route path="settings" element={<SystemSettings />} />
                       </Route>
                       <Route path="*" element={<NotFound />} />
