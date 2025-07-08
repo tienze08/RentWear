@@ -44,28 +44,28 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <DashboardCard
                     title="Total Users"
-                    value="12,345"
+                    value="225"
                     description="Active accounts"
                     icon={Users}
                     trend={12}
                 />
                 <DashboardCard
                     title="Total Products"
-                    value="1,234"
+                    value="100"
                     description="In inventory"
                     icon={Package}
                     trend={-2}
                 />
                 <DashboardCard
                     title="Partner Shops"
-                    value="48"
+                    value="5"
                     description="Across 12 cities"
                     icon={Store}
                     trend={8}
                 />
                 <DashboardCard
                     title="Monthly Revenue"
-                    value="$48,574"
+                    value="541203 đồng"
                     description="For current month"
                     icon={TrendingUp}
                     trend={15}

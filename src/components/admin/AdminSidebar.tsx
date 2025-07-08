@@ -1,7 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
     LayoutDashboard,
-    Package2,
     FileText,
     Users,
     Store,
@@ -21,7 +20,6 @@ interface SidebarProps {
 
 const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
-    { name: "Product List", path: "/admin/products", icon: Package2 },
     { name: "Rental Forms", path: "/admin/rental-forms", icon: FileText },
     { name: "Users", path: "/admin/users", icon: Users },
     { name: "Rental Shop", path: "/admin/rental-shop", icon: Store },

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Filter, FileText, MoreHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -20,89 +20,44 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import axiosInstance from "@/lib/axiosInstance";
 
-const forms = [
-    {
-        id: 1,
-        customer: "John Smith",
-        items: 3,
-        total: "$245.00",
-        status: "Active",
-        startDate: "May 15, 2025",
-        endDate: "May 20, 2025",
-    },
-    {
-        id: 2,
-        customer: "Emma Wilson",
-        items: 2,
-        total: "$125.00",
-        status: "Pending",
-        startDate: "May 18, 2025",
-        endDate: "May 19, 2025",
-    },
-    {
-        id: 3,
-        customer: "Michael Brown",
-        items: 1,
-        total: "$75.00",
-        status: "Completed",
-        startDate: "May 10, 2025",
-        endDate: "May 13, 2025",
-    },
-    {
-        id: 4,
-        customer: "Sophia Garcia",
-        items: 4,
-        total: "$310.00",
-        status: "Active",
-        startDate: "May 14, 2025",
-        endDate: "May 21, 2025",
-    },
-    {
-        id: 5,
-        customer: "William Johnson",
-        items: 2,
-        total: "$180.00",
-        status: "Cancelled",
-        startDate: "May 19, 2025",
-        endDate: "May 22, 2025",
-    },
-    {
-        id: 6,
-        customer: "Olivia Martinez",
-        items: 3,
-        total: "$220.00",
-        status: "Pending",
-        startDate: "May 20, 2025",
-        endDate: "May 25, 2025",
-    },
-    {
-        id: 7,
-        customer: "James Miller",
-        items: 1,
-        total: "$95.00",
-        status: "Completed",
-        startDate: "May 12, 2025",
-        endDate: "May 13, 2025",
-    },
-    {
-        id: 8,
-        customer: "Ava Davis",
-        items: 2,
-        total: "$150.00",
-        status: "Active",
-        startDate: "May 16, 2025",
-        endDate: "May 18, 2025",
-    },
-];
+interface Rental {
+    _id: string;
+    productId: string;
+    customerId: { _id: string; username: string };
+    storeId: string;
+    rentalStart: string;
+    rentalEnd: string;
+    totalPrice: number;
+    depositPaid: boolean;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+}
 
 const RentalForms = () => {
+    const [rentals, setRentals] = useState<Rental[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredForms = forms.filter(
-        (form) =>
-            form.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            form.status.toLowerCase().includes(searchQuery.toLowerCase())
+    useEffect(() => {
+        const fetchRentals = async () => {
+            try {
+                const res = await axiosInstance.get("/rentals");
+                setRentals(res.data);
+            } catch (err) {
+                console.error("Failed to fetch rentals", err);
+            }
+        };
+        fetchRentals();
+    }, []);
+
+    const filteredRentals = rentals.filter(
+        (rental) =>
+            rental.customerId?.username
+                ?.toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+            rental.status.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const getStatusColor = (status: string) => {
@@ -113,7 +68,7 @@ const RentalForms = () => {
                 return "border-yellow-500 text-yellow-600 bg-yellow-50";
             case "completed":
                 return "border-blue-500 text-blue-600 bg-blue-50";
-            case "cancelled":
+            case "canceled":
                 return "border-red-500 text-red-600 bg-red-50";
             default:
                 return "border-gray-500 text-gray-600 bg-gray-50";
@@ -138,7 +93,7 @@ const RentalForms = () => {
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                             <Input
                                 type="text"
-                                placeholder="Search forms..."
+                                placeholder="Search by username or status..."
                                 className="pl-10"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -158,7 +113,6 @@ const RentalForms = () => {
                             <TableHeader>
                                 <TableRow className="border-b border-sidebar-border">
                                     <TableHead>Customer</TableHead>
-                                    <TableHead>Items</TableHead>
                                     <TableHead>Total</TableHead>
                                     <TableHead>Start Date</TableHead>
                                     <TableHead>End Date</TableHead>
@@ -169,26 +123,39 @@ const RentalForms = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filteredForms.map((form) => (
+                                {filteredRentals.map((rental) => (
                                     <TableRow
-                                        key={form.id}
+                                        key={rental._id}
                                         className="border-b border-sidebar-border hover:bg-gray-50"
                                     >
                                         <TableCell className="font-medium">
-                                            {form.customer}
+                                            {rental.customerId?.username ||
+                                                "Unknown"}
                                         </TableCell>
-                                        <TableCell>{form.items}</TableCell>
-                                        <TableCell>{form.total}</TableCell>
-                                        <TableCell>{form.startDate}</TableCell>
-                                        <TableCell>{form.endDate}</TableCell>
+                                        <TableCell>
+                                            ${rental.totalPrice}
+                                        </TableCell>
+                                        <TableCell>
+                                            {new Date(
+                                                rental.rentalStart
+                                            ).toLocaleDateString()}
+                                        </TableCell>
+                                        <TableCell>
+                                            {new Date(
+                                                rental.rentalEnd
+                                            ).toLocaleDateString()}
+                                        </TableCell>
                                         <TableCell>
                                             <Badge
                                                 variant="outline"
                                                 className={getStatusColor(
-                                                    form.status
+                                                    rental.status
                                                 )}
                                             >
-                                                {form.status}
+                                                {rental.status.charAt(0) +
+                                                    rental.status
+                                                        .slice(1)
+                                                        .toLowerCase()}
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-right">
@@ -227,9 +194,11 @@ const RentalForms = () => {
                             </TableBody>
                         </Table>
 
-                        {filteredForms.length === 0 && (
+                        {filteredRentals.length === 0 && (
                             <div className="text-center py-10">
-                                <p className="text-gray-500">No forms found</p>
+                                <p className="text-gray-500">
+                                    No rentals found
+                                </p>
                             </div>
                         )}
                     </div>
