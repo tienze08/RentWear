@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
     LayoutDashboard,
     FileText,
@@ -8,10 +8,9 @@ import {
     Settings,
     ChevronLeft,
     ChevronRight,
-    LogOut,
+    LogOutIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuth } from "../contexts/AuthContext";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -28,13 +27,11 @@ const menuItems = [
 ];
 
 const AdminSidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
-    const { logout } = useAuth();
-    const navigate = useNavigate();
     const location = useLocation();
 
     const handleLogout = () => {
-        logout();
-        navigate("/");
+        localStorage.removeItem("authToken");
+        window.location.href = "/login";
     };
 
     return (
@@ -112,9 +109,10 @@ const AdminSidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                                     admin@example.com
                                 </p>
                             </div>
-                            <LogOut
+
+                            <LogOutIcon
+                                className="ml-auto h-5 w-5 text-blue-700 cursor-pointer hover:text-blue-800 transition-colors"
                                 onClick={handleLogout}
-                                className="hover:cursor-pointer w-4 h-4 ml-4"
                             />
                         </div>
                     ) : (

@@ -52,6 +52,8 @@ const RentalForms = () => {
         fetchRentals();
     }, []);
 
+    console.log("Rentals:", rentals);
+
     const filteredRentals = rentals.filter(
         (rental) =>
             rental.customerId?.username
