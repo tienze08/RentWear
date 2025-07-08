@@ -62,7 +62,9 @@ const Revenue = () => {
 
     useEffect(() => {
         const fetchSummary = async () => {
-            const res = await axiosInstance.get("/payments/summary");
+            const res = await axiosInstance.get(
+                "http://localhost:5000/api/payments/summary"
+            );
             const data = res.data;
 
             setSummary(data);

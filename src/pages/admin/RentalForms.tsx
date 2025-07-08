@@ -25,7 +25,10 @@ import axiosInstance from "@/lib/axiosInstance";
 interface Rental {
     _id: string;
     productId: string;
-    customerId: { _id: string; username: string };
+    customerId: {
+        _id: string;
+        username: string;
+    };
     storeId: string;
     rentalStart: string;
     rentalEnd: string;
@@ -43,7 +46,9 @@ const RentalForms = () => {
     useEffect(() => {
         const fetchRentals = async () => {
             try {
-                const res = await axiosInstance.get("/rentals");
+                const res = await axiosInstance.get(
+                    "http://localhost:5000/api/rentals"
+                );
                 setRentals(res.data);
             } catch (err) {
                 console.error("Failed to fetch rentals", err);
@@ -51,8 +56,6 @@ const RentalForms = () => {
         };
         fetchRentals();
     }, []);
-
-    console.log("Rentals:", rentals);
 
     const filteredRentals = rentals.filter(
         (rental) =>
@@ -131,8 +134,7 @@ const RentalForms = () => {
                                         className="border-b border-sidebar-border hover:bg-gray-50"
                                     >
                                         <TableCell className="font-medium">
-                                            {rental.customerId?.username ||
-                                                "Unknown"}
+                                            {rental.customerId?.username}
                                         </TableCell>
                                         <TableCell>
                                             ${rental.totalPrice}
