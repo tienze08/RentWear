@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { geminiApiService } from "@/config/AIModel";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
     id: string;
@@ -136,7 +137,29 @@ export const AIChatWidget = () => {
                                                 : "bg-white text-gray-800 border border-gray-100 rounded-bl-md"
                                         }`}
                                     >
-                                        {message.text}
+                                        {!message.isUser ? (
+                                            <div className="prose prose-sm prose-a:text-blue-600 hover:prose-a:underline">
+                                                <ReactMarkdown
+                                                    components={{
+                                                        a: ({
+                                                            node,
+                                                            ...props
+                                                        }) => (
+                                                            <a
+                                                                {...props}
+                                                                className="text-pink-600 font-semibold underline underline-offset-2 hover:text-pink-700 hover:underline"
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            />
+                                                        ),
+                                                    }}
+                                                >
+                                                    {message.text}
+                                                </ReactMarkdown>
+                                            </div>
+                                        ) : (
+                                            message.text
+                                        )}
                                     </div>
                                     {message.isUser && (
                                         <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0 mt-auto">
@@ -145,6 +168,7 @@ export const AIChatWidget = () => {
                                     )}
                                 </div>
                             ))}
+
                             <div ref={bottomRef} />
                         </div>
                     </ScrollArea>
