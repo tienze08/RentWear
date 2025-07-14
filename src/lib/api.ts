@@ -1,5 +1,7 @@
-// const BASE_URL = "http://localhost:5000/api";
-const BASE_URL = "https://fasent-api.onrender.com/api";
+let BASE_URL = "";
+
+if (process.env.NODE_ENV == "dev") BASE_URL = "http://localhost:5000/api";
+else BASE_URL = "https://fasent-api.onrender.com/api";
 
 const ApiConstants = {
   //Auth
@@ -25,19 +27,31 @@ const ApiConstants = {
   //Rental
   GET_USER_RENTALS: `${BASE_URL}/rentals/user/me`,
   RENTALS: `${BASE_URL}/rentals`,
+  CANCEL_RENTAL: (rentalId: string) => `${BASE_URL}/rentals/${rentalId}/cancel`,
+  TRIGGER_AUTO_RETURN: `${BASE_URL}/rentals/admin/trigger-auto-return`,
   //Payment
   GET_CUSTOMER_PAYMENTS: (customerId: string) =>
     `${BASE_URL}/payments/customer/${customerId}`,
+
+  //Payout
+  PAYOUTS: `${BASE_URL}/payouts`,
+  CREATE_PAYOUT: `${BASE_URL}/payouts/create`,
+  GET_ALL_PAYOUTS: `${BASE_URL}/payouts/admin/all`,
+  GET_PAYOUT_STATISTICS: `${BASE_URL}/payouts/admin/statistics`,
+  GET_PENDING_PAYOUTS: `${BASE_URL}/payouts/admin/pending`,
+  UPDATE_PAYOUT_STATUS: (payoutId: string) => `${BASE_URL}/payouts/${payoutId}/status`,
+  GET_STORE_PAYOUTS: `${BASE_URL}/payouts/store/my-payouts`,
+
   //Feedback
   FEEDBACK: `${BASE_URL}/feedbacks`,
   GET_STORE_FEEDBACK: (storeId: string) =>
     `${BASE_URL}/feedbacks/store/${storeId}`,
-    CREATE_REPORT: `${BASE_URL}/reports`, 
-  GET_ALL_REPORTS: `${BASE_URL}/reports`, 
+  CREATE_REPORT: `${BASE_URL}/reports`,
+  GET_ALL_REPORTS: `${BASE_URL}/reports`,
   GET_REPORTS_BY_TARGET: (userId: string) =>
-    `${BASE_URL}/reports/target/${userId}`, 
+    `${BASE_URL}/reports/target/${userId}`,
 
-  BAN_USER: (id: string)   => `${BASE_URL}/users/ban/${id}`,
+  BAN_USER: (id: string) => `${BASE_URL}/users/ban/${id}`,
   UNBAN_USER: (id: string) => `${BASE_URL}/users/unban/${id}`,
   //Chat
   GET_USER_CONVERSATIONS: (userId: string) => `${BASE_URL}/chats/conversations/${userId}`,
@@ -46,4 +60,5 @@ const ApiConstants = {
   CREATE_OR_GET_CONVERSATION: `${BASE_URL}/chats/conversation`,
 } as const;
 
+export { BASE_URL };
 export default ApiConstants;

@@ -9,15 +9,38 @@ const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const paymentId = searchParams.get("paymentId");
   const orderCode = searchParams.get("orderCode");
+  
   useEffect(() => {
     const updatePaymentStatus = async () => {
       console.log("Updating payment status:", paymentId, orderCode);
       if (paymentId || orderCode) {
         try {
+          // Update payment status
           await axiosInstance.put(`/payments/${paymentId}/status`, {
             status: "COMPLETED",
             orderCode: orderCode,
           });
+          
+          // Auto-approve related rentals
+          if (paymentId) {
+            try {
+              const paymentResponse = await axiosInstance.get(`/payments/${paymentId}`);
+              const payment = paymentResponse.data;
+              
+              if (payment.rentals && payment.rentals.length > 0) {
+                // Update all related rentals to APPROVED
+                for (const rentalId of payment.rentals) {
+                  await axiosInstance.patch(`/rentals/${rentalId}/status`, {
+                    status: "APPROVED"
+                  });
+                }
+                console.log(`Approved ${payment.rentals.length} rentals for payment ${paymentId}`);
+              }
+            } catch (error) {
+              console.error("Failed to auto-approve rentals:", error);
+            }
+          }
+          
         } catch (error) {
           console.error("Failed to update payment status:", error);
         }
@@ -25,7 +48,7 @@ const PaymentSuccess = () => {
     };
 
     updatePaymentStatus();
-  }, [paymentId]);
+  }, [paymentId, orderCode]);
 
   return (
     <Layout>

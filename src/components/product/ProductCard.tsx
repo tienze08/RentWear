@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/contexts/CartContext";
 import type { Product } from "@/lib/types";
 import { useAuth } from "../contexts/AuthContext";
-import { useRental } from "../contexts/RentalContext";
+import { useRental } from "@/hooks/useRental";
 
 interface ProductCardProps {
   product: Product;

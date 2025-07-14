@@ -27,6 +27,7 @@ import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { FcGoogle } from "react-icons/fc";
+import { BASE_URL } from "@/lib/api";
 
 const loginSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email address" }),
@@ -178,7 +179,7 @@ const Login = () => {
                                     className="w-full bg-blueberry hover:bg-blue-950 text-white font-medium py-2 rounded-md shadow-md transition-colors"
                                     onClick={() =>
                                         (window.location.href =
-                                            "https://fasent-api.onrender.com/api/auth/google")
+                                            `${BASE_URL}/auth/google`)
                                     }
                                     disabled={isLoading}
                                 >

@@ -55,6 +55,15 @@ export interface Rental {
   };
 }
 
+export interface Feedback {
+  _id: string;
+  customerId: User;
+  storeId: Store;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
 export interface RentalFormData {
   productId: string | undefined;
   customerId: string;

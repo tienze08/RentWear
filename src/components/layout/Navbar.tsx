@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useRental } from "../contexts/RentalContext";
+import { useRental } from "@/hooks/useRental";
 
 export const Navbar = () => {
   const { totalItems } = useRental();

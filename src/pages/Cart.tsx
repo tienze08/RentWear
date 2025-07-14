@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { useRental } from "@/components/contexts/RentalContext";
+import { useRental } from "@/hooks/useRental";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -164,22 +164,22 @@ const Cart = () => {
                 </h2>
 
                 <div className="space-y-4 mb-6">
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span className="text-fashion-muted">Subtotal</span>
                     <span className="font-medium">
                       {totalPrice.toFixed(2)} VNĐ
                     </span>
-                  </div>
-                  <div className="flex justify-between">
+                  </div> */}
+                  {/* <div className="flex justify-between">
                     <span className="text-fashion-muted">Processing Fee</span>
                     <span className="font-medium">
                       {(totalPrice * 0.1).toFixed(2)} VNĐ
                     </span>
-                  </div>
+                  </div> */}
                   <div className="flex justify-between border-t border-gray-200 pt-4">
                     <span className="font-semibold">Total</span>
                     <span className="font-bold">
-                      {(totalPrice * 1.1).toFixed(2)} VNĐ
+                      {totalPrice.toFixed(2)} VNĐ
                     </span>
                   </div>
                 </div>

@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Store, Product } from "@/lib/types";
 import axiosInstance from "@/lib/axiosInstance";
 import ApiConstants from "@/lib/api";
-import { useRental } from "@/components/contexts/RentalContext";
+import { useRental } from "@/hooks/useRental";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { eachDayOfInterval, parseISO } from "date-fns";
 
@@ -141,140 +141,245 @@ const ProductDetail = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-12">
-          {/* Product Image */}
-          <div className="lg:w-1/2">
-            <div className="bg-white rounded-lg overflow-hidden shadow-md">
-              <img
-                src={product.images[0]}
-                alt={product.name}
-                className="w-full h-auto object-cover aspect-square"
-              />
-            </div>
-          </div>
-
-          {/* Product Details */}
-          <div className="lg:w-1/2">
-            <h1 className="text-3xl font-bold text-fashion-DEFAULT mb-2">
-              {product.name}
-            </h1>
-
-            {store && (
-              <div className="mb-4">
-                <Link
-                  to={`/stores/${store._id}`}
-                  className="text-fashion-accent hover:text-fashion-accent/80 flex items-center gap-2"
-                >
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col lg:flex-row gap-12">
+            {/* Product Image */}
+            <div className="lg:w-1/2">
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden shadow-2xl border border-white/20 sticky top-8">
+                <div className="aspect-square overflow-hidden">
                   <img
-                    src={store.logoUrl}
-                    alt={store.storeName}
-                    className="w-6 h-6 rounded-full object-cover"
-                  />
-                  <span>{store.storeName}</span>
-                </Link>
-              </div>
-            )}
-
-            <div className="text-xl font-semibold mb-6">
-              {product.rentalPrice} VNĐ/day
-            </div>
-
-            <p className="text-fashion-muted mb-6">{product.description}</p>
-
-            <div className="mb-6">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="font-medium">Size:</span>
-                <span>{product.size}</span>
-              </div>
-
-              <div className="flex items-center gap-4 mb-2">
-                <span className="font-medium">Category:</span>
-                <span>{product.category}</span>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <span className="font-medium">Availability:</span>
-                <span
-                  className={
-                    product.available ? "text-green-600" : "text-red-600"
-                  }
-                >
-                  {product.available ? "In Stock" : "Out of Stock"}
-                </span>
-              </div>
-            </div>
-
-            <div className="border-t border-b border-gray-200 py-6 my-6">
-              <h3 className="font-semibold mb-4">Rental Period</h3>
-              <div className="mb-4 flex gap-4 items-center">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Start Date
-                  </label>
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date: Date | null) => {
-                      if (date) {
-                        setStartDate(date);
-                        if (date > endDate) setEndDate(date);
-                      }
-                    }}
-                    minDate={new Date()}
-                    dateFormat="yyyy-MM-dd"
-                    className="w-40 px-2 py-1 border rounded"
-                    excludeDates={getDisabledDates()}
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    End Date
-                  </label>
-                  <DatePicker
-                    selected={endDate}
-                    onChange={(date: Date | null) => {
-                      if (date) {
-                        setEndDate(date);
-                      }
-                    }}
-                    minDate={startDate}
-                    dateFormat="yyyy-MM-dd"
-                    className="w-40 px-2 py-1 border rounded"
-                    excludeDates={getDisabledDates()}
-                  />
+                {/* Product badges */}
+                <div className="absolute top-4 left-4 flex gap-2">
+                  {product.available && (
+                    <span className="bg-gradient-to-r from-green-400 to-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                      Có Sẵn
+                    </span>
+                  )}
                 </div>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm">Days: {rentalDays}</span>
-                <span className="text-sm font-medium">
-                  Total: {totalPrice} VNĐ
-                </span>
               </div>
             </div>
 
-            <div className="flex flex-col gap-4">
-              <Button
-                onClick={handleAddRental}
-                className={`w-full py-6 text-lg hover:cursor-pointer ${
-                  inCart
-                    ? "bg-gray-100 hover:bg-gray-200 text-fashion-DEFAULT"
-                    : "bg-fashion-accent hover:bg-fashion-accent/90 text-white"
-                }`}
-                disabled={!product.available || inCart}
-              >
-                {inCart ? "Added to Cart" : "Add to Cart"}
-              </Button>
+            {/* Product Details */}
+            <div className="lg:w-1/2">
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-rose-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                  {product.name}
+                </h1>
 
-              {inCart && (
-                <Link to="/cart">
+                {store && (
+                  <div className="mb-6">
+                    <Link
+                      to={`/stores/${store._id}`}
+                      className="flex items-center gap-3 text-blue-600 hover:text-blue-700 transition-colors group"
+                    >
+                      <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-blue-200 group-hover:border-blue-300 transition-colors">
+                        <img
+                          src={store.logoUrl}
+                          alt={store.storeName}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span className="font-semibold">{store.storeName}</span>
+                      <svg
+                        className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                )}
+
+                <div className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                  <span className="bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
+                    {product.rentalPrice.toLocaleString()} VNĐ
+                  </span>
+                  <span className="text-lg text-gray-500 font-normal">
+                    /ngày
+                  </span>
+                </div>
+
+                <p className="text-gray-600 mb-8 leading-relaxed text-lg">
+                  {product.description}
+                </p>
+
+                {/* Product Info */}
+                <div className="mb-8 space-y-4">
+                  <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-gray-700">
+                        Kích thước:
+                      </span>
+                      <span className="ml-2 text-gray-600">{product.size}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-purple-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-gray-700">
+                        Danh mục:
+                      </span>
+                      <span className="ml-2 text-gray-600">
+                        {product.category}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl">
+                    <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-emerald-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-gray-700">
+                        Tình trạng:
+                      </span>
+                      <span
+                        className={`ml-2 font-semibold ${
+                          product.available
+                            ? "text-emerald-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {product.available ? "Có Sẵn" : "Hết Hàng"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rental Period */}
+                <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 mb-8 border border-gray-200">
+                  <h3 className="text-xl font-bold mb-6 text-gray-800">
+                    Thời Gian Thuê
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                      <label className="block text-sm font-semibold mb-3 text-gray-700">
+                        Ngày Bắt Đầu
+                      </label>
+                      <DatePicker
+                        selected={startDate}
+                        onChange={(date: Date | null) => {
+                          if (date) {
+                            setStartDate(date);
+                            if (date > endDate) setEndDate(date);
+                          }
+                        }}
+                        minDate={new Date()}
+                        dateFormat="yyyy-MM-dd"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-400 transition-colors"
+                        excludeDates={getDisabledDates()}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-3 text-gray-700">
+                        Ngày Kết Thúc
+                      </label>
+                      <DatePicker
+                        selected={endDate}
+                        onChange={(date: Date | null) => {
+                          if (date) {
+                            setEndDate(date);
+                          }
+                        }}
+                        minDate={startDate}
+                        dateFormat="yyyy-MM-dd"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-400 transition-colors"
+                        excludeDates={getDisabledDates()}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center p-4 bg-white rounded-xl border border-gray-200">
+                    <span className="text-lg font-semibold text-gray-700">
+                      Số ngày:{" "}
+                      <span className="text-blue-600">{rentalDays}</span>
+                    </span>
+                    <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                      Tổng: {totalPrice.toLocaleString()} VNĐ
+                    </span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-4">
                   <Button
-                    variant="outline"
-                    className="w-full py-6 text-lg border-fashion-accent text-fashion-accent"
+                    onClick={handleAddRental}
+                    className={`w-full py-6 text-lg font-semibold rounded-2xl transition-all duration-300 transform hover:scale-105 ${
+                      inCart
+                        ? "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                        : "bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600 text-white shadow-lg"
+                    }`}
+                    disabled={!product.available || inCart}
                   >
-                    View Cart
+                    {inCart ? "✓ Đã Thêm Vào Giỏ" : "Thêm Vào Giỏ Hàng"}
                   </Button>
-                </Link>
-              )}
+
+                  {inCart && (
+                    <Link to="/cart">
+                      <Button
+                        variant="outline"
+                        className="w-full py-6 text-lg font-semibold border-2 border-blue-300 text-blue-600 hover:bg-blue-50 rounded-2xl transition-all duration-300"
+                      >
+                        Xem Giỏ Hàng
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -28,6 +28,7 @@ import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import ProductList from "./pages/admin/ProductList";
 import RentalForms from "./pages/admin/RentalForms";
+import RentalManagement from "./pages/admin/RentalManagement";
 import Users from "./pages/admin/Users";
 import RentalShop from "./pages/admin/RentalShop";
 import Revenue from "./pages/admin/Revenue";
@@ -35,7 +36,7 @@ import SystemSettings from "./pages/admin/SystemSettings";
 import { SocketProvider } from "./components/contexts/SocketContext";
 import { ChatProvider } from "./components/contexts/ChatContext";
 import ChatPage from "./pages/Chat";
-
+import Payouts from "./pages/admin/Payouts";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -93,9 +94,11 @@ const App = () => (
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="products" element={<ProductList />} />
                         <Route path="rental-forms" element={<RentalForms />} />
+                        <Route path="rental-management" element={<RentalManagement />} />
                         <Route path="users" element={<Users />} />
                         <Route path="rental-shop" element={<RentalShop />} />
                         <Route path="revenue" element={<Revenue />} />
+                        <Route path="payouts" element={<Payouts />} />
                         <Route path="settings" element={<SystemSettings />} />
                       </Route>
                       <Route path="*" element={<NotFound />} />

@@ -10,6 +10,7 @@ import {
     ChevronLeft,
     ChevronRight,
     LogOut,
+    DollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "../contexts/AuthContext";
@@ -26,6 +27,7 @@ const menuItems = [
     { name: "Users", path: "/admin/users", icon: Users },
     { name: "Rental Shop", path: "/admin/rental-shop", icon: Store },
     { name: "Revenue", path: "/admin/revenue", icon: TrendingUp },
+    { name: "Payouts", path: "/admin/payouts", icon: DollarSign },
     { name: "System Settings", path: "/admin/settings", icon: Settings },
 ];
 
