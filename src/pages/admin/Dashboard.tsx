@@ -1,243 +1,312 @@
-import { Users, Package, Store, TrendingUp } from "lucide-react";
-import DashboardCard from "@/components/admin/DashboardCard";
-import { Card } from "@/components/ui/card";
+import { useEffect, useState } from "react";
 import {
-    AreaChart,
-    Area,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    BarChart as ReBarChart,
-    Bar,
+  Users,
+  Package,
+  Store,
+  DollarSign,
+  ShoppingCart,
+  AlertTriangle,
+  MessageSquare,
+  TrendingUp,
+} from "lucide-react";
+import DashboardCard from "@/components/admin/DashboardCard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
 } from "recharts";
+import axiosInstance from "@/lib/axiosInstance";
+import ApiConstants from "@/lib/api";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
-const revenueData = [
-    { name: "Jan", value: 4000 },
-    { name: "Feb", value: 3000 },
-    { name: "Mar", value: 5000 },
-    { name: "Apr", value: 4500 },
-    { name: "May", value: 6000 },
-    { name: "Jun", value: 5200 },
-    { name: "Jul", value: 7000 },
-];
+// Types for API responses
+interface DashboardOverview {
+  totalUsers: number;
+  totalCustomers: number;
+  totalStores: number;
+  totalProducts: number;
+  totalRentals: number;
+  totalActiveRentals: number;
+  totalCompletedRentals: number;
+  totalRevenue: number;
+  totalReports: number;
+  totalFeedbacks: number;
+}
 
-const productsData = [
-    { name: "Category A", value: 400 },
-    { name: "Category B", value: 300 },
-    { name: "Category C", value: 200 },
-    { name: "Category D", value: 350 },
-    { name: "Category E", value: 280 },
-];
+interface MonthlyRevenue {
+  year: number;
+  month: number;
+  monthName: string;
+  revenue: number;
+  count: number;
+}
+
+interface RecentActivity {
+  id: string;
+  customer: string;
+  product: string;
+  status: string;
+  amount: number;
+  date: string;
+}
 
 const Dashboard = () => {
+  const [overview, setOverview] = useState<DashboardOverview | null>(null);
+  const [monthlyRevenue, setMonthlyRevenue] = useState<MonthlyRevenue[]>([]);
+  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>(
+    []
+  );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const [overviewRes, monthlyRevenueRes] = await Promise.all([
+          axiosInstance.get(ApiConstants.DASHBOARD_OVERVIEW),
+          axiosInstance.get(ApiConstants.DASHBOARD_MONTHLY_REVENUE),
+        ]);
+
+        setOverview(overviewRes.data.overview);
+        setRecentActivities(overviewRes.data.recentActivities);
+        setMonthlyRevenue(monthlyRevenueRes.data);
+      } catch (err: unknown) {
+        console.error("Error fetching dashboard data:", err);
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to load dashboard data";
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-                <p className="text-gray-500 mt-1">
-                    Welcome back to your admin dashboard
-                </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <DashboardCard
-                    title="Total Users"
-                    value="225"
-                    description="Active accounts"
-                    icon={Users}
-                    trend={12}
-                />
-                <DashboardCard
-                    title="Total Products"
-                    value="100"
-                    description="In inventory"
-                    icon={Package}
-                    trend={-2}
-                />
-                <DashboardCard
-                    title="Partner Shops"
-                    value="5"
-                    description="Across 12 cities"
-                    icon={Store}
-                    trend={8}
-                />
-                <DashboardCard
-                    title="Monthly Revenue"
-                    value="541203 đồng"
-                    description="For current month"
-                    icon={TrendingUp}
-                    trend={15}
-                />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="p-6 bg-white border-sidebar-border">
-                    <h2 className="text-lg font-semibold mb-4 text-gray-800">
-                        Revenue Overview
-                    </h2>
-                    <div className="h-80">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={revenueData}>
-                                <defs>
-                                    <linearGradient
-                                        id="colorValue"
-                                        x1="0"
-                                        y1="0"
-                                        x2="0"
-                                        y2="1"
-                                    >
-                                        <stop
-                                            offset="5%"
-                                            stopColor="#3b82f6"
-                                            stopOpacity={0.8}
-                                        />
-                                        <stop
-                                            offset="95%"
-                                            stopColor="#3b82f6"
-                                            stopOpacity={0}
-                                        />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    vertical={false}
-                                />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Area
-                                    type="monotone"
-                                    dataKey="value"
-                                    stroke="#3b82f6"
-                                    fillOpacity={1}
-                                    fill="url(#colorValue)"
-                                />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </Card>
-
-                <Card className="border-sidebar-border p-6 bg-white">
-                    <h2 className="text-lg font-semibold mb-4 text-gray-800">
-                        Product Categories
-                    </h2>
-                    <div className="h-80">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <ReBarChart data={productsData}>
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    horizontal={true}
-                                    vertical={false}
-                                />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar
-                                    dataKey="value"
-                                    fill="#3b82f6"
-                                    radius={[4, 4, 0, 0]}
-                                />
-                            </ReBarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </Card>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <Card className="p-6 bg-white col-span-2 border-sidebar-border">
-                    <h2 className="text-lg font-semibold mb-4 text-gray-800">
-                        Recent Activities
-                    </h2>
-                    <div className="space-y-4">
-                        {[1, 2, 3, 4, 5].map((item) => (
-                            <div
-                                key={item}
-                                className="flex items-center justify-between pb-4 border-b border-gray-100"
-                            >
-                                <div className="flex items-center">
-                                    <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center mr-4">
-                                        <Users className="h-5 w-5 text-gray-500" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium">
-                                            New user registered
-                                        </p>
-                                        <p className="text-xs text-gray-500">
-                                            2 hours ago
-                                        </p>
-                                    </div>
-                                </div>
-                                <span className="text-xs bg-blue-50 text-blue-700 py-1 px-2 rounded">
-                                    User
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                </Card>
-
-                <Card className="p-6 bg-white border-sidebar-border">
-                    <h2 className="text-lg font-semibold mb-4 text-gray-800">
-                        Quick Stats
-                    </h2>
-                    <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">
-                                New Orders
-                            </span>
-                            <span className="text-sm font-semibold">45</span>
-                        </div>
-                        <div className="w-full bg-gray-100 rounded-full h-2">
-                            <div
-                                className="bg-green-500 h-2 rounded-full"
-                                style={{ width: "45%" }}
-                            ></div>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">
-                                Pending Returns
-                            </span>
-                            <span className="text-sm font-semibold">12</span>
-                        </div>
-                        <div className="w-full bg-gray-100 rounded-full h-2">
-                            <div
-                                className="bg-yellow-500 h-2 rounded-full"
-                                style={{ width: "15%" }}
-                            ></div>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">
-                                Support Tickets
-                            </span>
-                            <span className="text-sm font-semibold">18</span>
-                        </div>
-                        <div className="w-full bg-gray-100 rounded-full h-2">
-                            <div
-                                className="bg-blue-500 h-2 rounded-full"
-                                style={{ width: "25%" }}
-                            ></div>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600">
-                                Customer Satisfaction
-                            </span>
-                            <span className="text-sm font-semibold">92%</span>
-                        </div>
-                        <div className="w-full bg-gray-100 rounded-full h-2">
-                            <div
-                                className="bg-purple-500 h-2 rounded-full"
-                                style={{ width: "92%" }}
-                            ></div>
-                        </div>
-                    </div>
-                </Card>
-            </div>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">
+            Error Loading Dashboard
+          </h2>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!overview) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">
+            No Data Available
+          </h2>
+          <p className="text-gray-600">
+            Dashboard data is not available at the moment.
+          </p>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+        <p className="text-gray-500 mt-1">
+          Welcome back to your admin dashboard
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <DashboardCard
+          title="Total Users"
+          value={overview?.totalUsers?.toString() || "0"}
+          description="Active accounts"
+          icon={Users}
+          trend={12}
+        />
+        <DashboardCard
+          title="Total Products"
+          value={overview?.totalProducts?.toString() || "0"}
+          description="In inventory"
+          icon={Package}
+          trend={-2}
+        />
+        <DashboardCard
+          title="Partner Stores"
+          value={overview?.totalStores?.toString() || "0"}
+          description="Active stores"
+          icon={Store}
+          trend={8}
+        />
+        <DashboardCard
+          title="Total Revenue"
+          value={`${
+            overview?.totalRevenue?.toLocaleString("vi-VN") || "0"
+          } VND`}
+          description="All time"
+          icon={DollarSign}
+          trend={15}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="p-6 bg-white border-sidebar-border">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-gray-800">
+              Revenue Overview (Last 12 Months)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={monthlyRevenue || []}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="monthName" />
+                  <YAxis
+                    tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`}
+                  />
+                  <Tooltip
+                    formatter={(value: number) => [
+                      `${value.toLocaleString("vi-VN")} VND`,
+                      "Revenue",
+                    ]}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="#8884d8"
+                    fill="#8884d8"
+                    fillOpacity={0.3}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="p-6 bg-white border-sidebar-border">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-gray-800">
+              Rental Statistics
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <ShoppingCart className="h-5 w-5 text-blue-600" />
+                  <span className="font-medium text-blue-800">
+                    Total Rentals
+                  </span>
+                </div>
+                <span className="text-blue-600 font-bold">
+                  {overview?.totalRentals || 0}
+                </span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-green-600" />
+                  <span className="font-medium text-green-800">
+                    Active Rentals
+                  </span>
+                </div>
+                <span className="text-green-600 font-bold">
+                  {overview?.totalActiveRentals || 0}
+                </span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Package className="h-5 w-5 text-purple-600" />
+                  <span className="font-medium text-purple-800">Completed</span>
+                </div>
+                <span className="text-purple-600 font-bold">
+                  {overview?.totalCompletedRentals || 0}
+                </span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-orange-600" />
+                  <span className="font-medium text-orange-800">Reports</span>
+                </div>
+                <span className="text-orange-600 font-bold">
+                  {overview?.totalReports || 0}
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Activities */}
+      <Card className="p-6 bg-white border-sidebar-border">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold text-gray-800">
+            Recent Activities
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {recentActivities && recentActivities.length > 0 ? (
+              recentActivities.map((activity) => (
+                <div
+                  key={activity.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <ShoppingCart className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-800">
+                        {activity.customer} rented {activity.product}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(activity.date).toLocaleDateString("vi-VN")}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-800">
+                      {activity.amount.toLocaleString("vi-VN")} VND
+                    </p>
+                    <p className="text-sm text-gray-500 capitalize">
+                      {activity.status}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <MessageSquare className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                <p>No recent activities</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 };
 
 export default Dashboard;
