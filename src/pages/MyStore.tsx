@@ -51,6 +51,7 @@ const MyStore = () => {
         const storeResponse = await axiosInstance.get(`/stores/${user._id}`);
         const storeData = {
           _id: storeResponse.data._id,
+          avatar: storeResponse.data.avatar,
           ...storeResponse.data.storeInfo,
         };
         console.log("storeData", storeData);
@@ -277,7 +278,7 @@ const MyStore = () => {
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="flex items-center gap-4 mb-4">
             <img
-              src={store.logoUrl}
+              src={store.avatar}
               alt={store.storeName}
               className="w-16 h-16 rounded-full object-cover"
             />

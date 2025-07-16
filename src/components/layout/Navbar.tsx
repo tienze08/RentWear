@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRental } from "../contexts/RentalContext";
+import logo from '../../../public/logo.jpg';
 
 export const Navbar = () => {
   const { totalItems } = useRental();
@@ -51,7 +52,7 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between ">
           <Link to="/" className="text-blueberry text-2xl font-bold">
-            Fasent
+            <img src={logo} alt="Fasent" className="h-12" />
           </Link>
 
           {/* Desktop Navigation */}

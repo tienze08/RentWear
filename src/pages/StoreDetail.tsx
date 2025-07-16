@@ -23,7 +23,7 @@ const StoreDetail = () => {
   const [showChat, setShowChat] = useState(false);
   const { user } = useAuth();
   const { startConversation, activeConversationId } = useChat();
-
+  console.log("Store avatar:", store?.avatar);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,6 +33,7 @@ const StoreDetail = () => {
         );
         const fetchedStore = {
           ...storeResp.data.storeInfo,
+          avatar: storeResp.data.avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK3G5Veo7I2HV2jVY8zYS_nPgYQkocDzRsRA&s',
           _id: storeResp.data._id,
         };
         setStore(fetchedStore);
@@ -109,7 +110,7 @@ const StoreDetail = () => {
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
             <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0 border-2 border-fashion-light">
               <img
-                src={store.logoUrl}
+                src={store.avatar}
                 alt={store.storeName}
                 className="w-full h-full object-cover"
               />

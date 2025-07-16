@@ -32,10 +32,12 @@ const Home = () => {
         const rawStores = storeResponse.data;
 
         const stores: Store[] = rawStores.map(
-          (item: { _id: string; storeInfo: Store }) => {
+          (item: { _id: string; avatar: string; storeInfo: Store }) => {
             return {
               ...item.storeInfo,
+              avatar: item.avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK3G5Veo7I2HV2jVY8zYS_nPgYQkocDzRsRA&s',
               _id: item._id,
+
             };
           }
         );

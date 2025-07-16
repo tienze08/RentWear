@@ -35,6 +35,7 @@ export interface Store {
   description: string;
   logoUrl: string;
   featured: boolean;
+  avatar ?: string;
 }
 
 export interface Rental {

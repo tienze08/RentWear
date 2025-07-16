@@ -18,6 +18,7 @@ const Stores = () => {
         const rawStores = response.data;
         const stores = rawStores.map((item: any) => ({
           ...item.storeInfo,
+          avatar: item.avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK3G5Veo7I2HV2jVY8zYS_nPgYQkocDzRsRA&s',
           _id: item._id,
         }));
         setStores(stores);

@@ -18,7 +18,7 @@ export const StoreCard = ({ store }: StoreCardProps) => {
       <div className="p-6 flex flex-col items-center">
         <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border-2 border-fashion-light">
           <img 
-            src={store.logoUrl}
+            src={store.avatar}
             alt={store.storeName}
             className="w-full h-full object-cover"
           />
