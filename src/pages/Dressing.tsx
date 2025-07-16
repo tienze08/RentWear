@@ -19,6 +19,21 @@ interface UploadedImage {
     file: File;
 }
 
+const sampleClothes = [
+    {
+        id: "sample1",
+        url: "https://res.cloudinary.com/dns6shagj/image/upload/v1752682139/fashion-rental/oba0mfrpkb9prktjkqvo.jpg",
+        name: "Đầm ren cổ vuông",
+        type: "full",
+    },
+    {
+        id: "sample2",
+        url: "https://res.cloudinary.com/dns6shagj/image/upload/v1752681590/fashion-rental/umnl2fhu9gdceoofh04a.jpg",
+        name: "Đầm hai dây",
+        type: "upper",
+    },
+];
+
 function Dressing() {
     const [modelImages, setModelImages] = useState<UploadedImage[]>([]);
     const [clothImages, setClothImages] = useState<UploadedImage[]>([]);
@@ -44,6 +59,30 @@ function Dressing() {
 
     const modelInputRef = useRef<HTMLInputElement>(null);
     const clothInputRef = useRef<HTMLInputElement>(null);
+
+    const addSampleCloth = (sample: (typeof sampleClothes)[0]) => {
+        // Tạo một File object giả từ URL ảnh mẫu
+        fetch(sample.url)
+            .then((res) => res.blob())
+            .then((blob) => {
+                const file = new File([blob], sample.name, { type: blob.type });
+                const newImage = {
+                    id: sample.id,
+                    url: sample.url,
+                    name: sample.name,
+                    file: file,
+                };
+
+                setClothImages((prev) => [...prev, newImage]);
+                if (selectedClothIndex === null) {
+                    setSelectedClothIndex(0);
+                }
+                setClothType(sample.type as any);
+            })
+            .catch((err) => {
+                console.error("Error loading sample image:", err);
+            });
+    };
 
     const handleModelUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -177,7 +216,7 @@ function Dressing() {
                 {
                     headers: {
                         "X-API-KEY":
-                            "38f436e1fb294a5bb62268350044db75f3f14b5003b4c21d434a14fa6b1184ba",
+                            "b6afb8cf0e4248248f07bca89d321bfd8b44e9355e27c9dd700b2059f47bba49",
                         "Content-Type": "multipart/form-data",
                     },
                 }
@@ -498,6 +537,36 @@ function Dressing() {
                                     className="hidden"
                                     multiple
                                 />
+                            </div>
+
+                            <div className="mb-6">
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    {sampleClothes.map((sample) => (
+                                        <div
+                                            key={sample.id}
+                                            className="relative group cursor-pointer"
+                                            onClick={() =>
+                                                addSampleCloth(sample)
+                                            }
+                                        >
+                                            <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
+                                                <img
+                                                    src={sample.url}
+                                                    alt={sample.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                <span className="bg-white px-2 py-1 rounded text-xs font-medium">
+                                                    Add to collection
+                                                </span>
+                                            </div>
+                                            <p className="mt-1 text-xs text-center truncate">
+                                                {sample.name}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
 
                             {clothImages.length === 0 ? (
