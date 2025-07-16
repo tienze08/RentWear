@@ -35,81 +35,146 @@ import SystemSettings from "./pages/admin/SystemSettings";
 import { SocketProvider } from "./components/contexts/SocketContext";
 import { ChatProvider } from "./components/contexts/ChatContext";
 import ChatPage from "./pages/Chat";
+import Dressing from "./pages/Dressing";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <TooltipProvider>
-        <AuthProvider>
-          <UserProvider>
-            <SocketProvider>
-              <ChatProvider>
-                <CartProvider>
-                  <RentalProvider>
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/products" element={<Products />} />
-                      <Route
-                        path="/products/:productId"
-                        element={<ProductDetail />}
-                      />
-                      <Route path="/stores" element={<Stores />} />
-                      <Route
-                        path="/stores/:storeId"
-                        element={<StoreDetail />}
-                      />
-                      <Route path="/cart" element={<Cart />} />
-                      <Route path="/my-rentals" element={<MyRentals />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/chat" element={<ChatPage />} />
-                      <Route path="/my-store" element={<MyStore />} />
-                      <Route
-                        path="/payment-success"
-                        element={<PaymentSuccess />}
-                      />
-                      <Route
-                        path="/payment-cancel"
-                        element={<PaymentCancel />}
-                      />
-                      <Route
-                        path="/forgot-password"
-                        element={<ForgotPassword />}
-                      />
-                      <Route
-                        path="/reset-password/:token"
-                        element={<ResetPassword />}
-                      />
-                      <Route
-                        path="/auth/google/callback"
-                        element={<GoogleCallback />}
-                      />
-                      <Route path="/auth/google" element={<GoogleCallback />} />
+    <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+            <TooltipProvider>
+                <AuthProvider>
+                    <UserProvider>
+                        <SocketProvider>
+                            <ChatProvider>
+                                <CartProvider>
+                                    <RentalProvider>
+                                        <Routes>
+                                            <Route
+                                                path="/"
+                                                element={<Home />}
+                                            />
+                                            <Route
+                                                path="/products"
+                                                element={<Products />}
+                                            />
+                                            <Route
+                                                path="/products/:productId"
+                                                element={<ProductDetail />}
+                                            />
+                                            <Route
+                                                path="/stores"
+                                                element={<Stores />}
+                                            />
+                                            <Route
+                                                path="/stores/:storeId"
+                                                element={<StoreDetail />}
+                                            />
+                                            <Route
+                                                path="/cart"
+                                                element={<Cart />}
+                                            />
+                                            <Route
+                                                path="/my-rentals"
+                                                element={<MyRentals />}
+                                            />
+                                            <Route
+                                                path="/login"
+                                                element={<Login />}
+                                            />
+                                            <Route
+                                                path="/register"
+                                                element={<Register />}
+                                            />
+                                            <Route
+                                                path="/settings"
+                                                element={<Settings />}
+                                            />
+                                            <Route
+                                                path="/chat"
+                                                element={<ChatPage />}
+                                            />
+                                            <Route
+                                                path="/my-store"
+                                                element={<MyStore />}
+                                            />
+                                            <Route
+                                                path="/dressing"
+                                                element={<Dressing />}
+                                            />
+                                            <Route
+                                                path="/payment-success"
+                                                element={<PaymentSuccess />}
+                                            />
+                                            <Route
+                                                path="/payment-cancel"
+                                                element={<PaymentCancel />}
+                                            />
+                                            <Route
+                                                path="/forgot-password"
+                                                element={<ForgotPassword />}
+                                            />
+                                            <Route
+                                                path="/reset-password/:token"
+                                                element={<ResetPassword />}
+                                            />
+                                            <Route
+                                                path="/auth/google/callback"
+                                                element={<GoogleCallback />}
+                                            />
+                                            <Route
+                                                path="/auth/google"
+                                                element={<GoogleCallback />}
+                                            />
 
-                      <Route path="/admin" element={<AdminLayout />}>
-                        <Route path="dashboard" element={<Dashboard />} />
-                        <Route path="products" element={<ProductList />} />
-                        <Route path="rental-forms" element={<RentalForms />} />
-                        <Route path="users" element={<Users />} />
-                        <Route path="rental-shop" element={<RentalShop />} />
-                        <Route path="revenue" element={<Revenue />} />
-                        <Route path="settings" element={<SystemSettings />} />
-                      </Route>
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </RentalProvider>
-                </CartProvider>
-              </ChatProvider>
-            </SocketProvider>
-          </UserProvider>
-        </AuthProvider>
-      </TooltipProvider>
-    </BrowserRouter>
-    <Sonner />
-  </QueryClientProvider>
+                                            <Route
+                                                path="/admin"
+                                                element={<AdminLayout />}
+                                            >
+                                                <Route
+                                                    path="dashboard"
+                                                    element={<Dashboard />}
+                                                />
+                                                <Route
+                                                    path="products"
+                                                    element={<ProductList />}
+                                                />
+                                                <Route
+                                                    path="rental-forms"
+                                                    element={<RentalForms />}
+                                                />
+                                                <Route
+                                                    path="users"
+                                                    element={<Users />}
+                                                />
+                                                <Route
+                                                    path="rental-shop"
+                                                    element={<RentalShop />}
+                                                />
+                                                <Route
+                                                    path="revenue"
+                                                    element={<Revenue />}
+                                                />
+                                                <Route
+                                                    path="settings"
+                                                    element={<SystemSettings />}
+                                                />
+                                            </Route>
+                                            <Route
+                                                path="*"
+                                                element={<NotFound />}
+                                            />
+                                        </Routes>
+                                    </RentalProvider>
+                                </CartProvider>
+                            </ChatProvider>
+                        </SocketProvider>
+                    </UserProvider>
+                </AuthProvider>
+            </TooltipProvider>
+        </BrowserRouter>
+        <Sonner />
+    </QueryClientProvider>
 );
 
 export default App;

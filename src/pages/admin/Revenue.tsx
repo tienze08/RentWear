@@ -15,6 +15,8 @@ import {
     Legend,
 } from "recharts";
 import { ArrowUp, DollarSign, TrendingUp } from "lucide-react";
+import { useEffect, useState } from "react";
+import axiosInstance from "@/lib/axiosInstance";
 
 const monthlyData = [
     { name: "Jan", revenue: 4000, expenses: 2400, profit: 1600 },
@@ -51,6 +53,27 @@ const categoryData = [
 ];
 
 const Revenue = () => {
+    const [summary, setSummary] = useState<{
+        totalRevenue: number;
+        totalExpenses: number;
+        totalProfit: number;
+        profitMargin: number;
+    } | null>(null);
+
+    useEffect(() => {
+        const fetchSummary = async () => {
+            const res = await axiosInstance.get(
+                "http://localhost:5000/api/payments/summary"
+            );
+            const data = res.data;
+
+            setSummary(data);
+        };
+        fetchSummary();
+    }, []);
+
+    console.log("Revenue summary:", summary);
+
     return (
         <div className="space-y-6">
             <div>
@@ -67,7 +90,9 @@ const Revenue = () => {
                             <p className="text-sm text-gray-500 font-medium">
                                 Total Revenue
                             </p>
-                            <h3 className="text-2xl font-bold mt-1">$64,389</h3>
+                            <h3 className="text-2xl font-bold mt-1">
+                                {summary?.totalRevenue} đồng
+                            </h3>
                         </div>
                         <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
                             <DollarSign className="h-5 w-5 text-green-600" />
@@ -90,7 +115,9 @@ const Revenue = () => {
                             <p className="text-sm text-gray-500 font-medium">
                                 Total Expenses
                             </p>
-                            <h3 className="text-2xl font-bold mt-1">$32,145</h3>
+                            <h3 className="text-2xl font-bold mt-1">
+                                {summary?.totalExpenses} đồng
+                            </h3>
                         </div>
                         <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
                             <DollarSign className="h-5 w-5 text-red-600" />
@@ -113,7 +140,9 @@ const Revenue = () => {
                             <p className="text-sm text-gray-500 font-medium">
                                 Total Profit
                             </p>
-                            <h3 className="text-2xl font-bold mt-1">$32,244</h3>
+                            <h3 className="text-2xl font-bold mt-1">
+                                {summary?.totalProfit} đồng
+                            </h3>
                         </div>
                         <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
                             <TrendingUp className="h-5 w-5 text-blue-600" />
@@ -136,7 +165,9 @@ const Revenue = () => {
                             <p className="text-sm text-gray-500 font-medium">
                                 Profit Margin
                             </p>
-                            <h3 className="text-2xl font-bold mt-1">50.1%</h3>
+                            <h3 className="text-2xl font-bold mt-1">
+                                {summary?.profitMargin.toFixed(2)}%
+                            </h3>
                         </div>
                         <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
                             <TrendingUp className="h-5 w-5 text-purple-600" />
