@@ -8,6 +8,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import ApiConstants from "@/lib/api";
 import { motion } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
+import banner from "@/assets/Artboard 1.png";
 
 const categories = [
   { label: "Dress", value: "DRESS" },
@@ -35,9 +36,10 @@ const Home = () => {
           (item: { _id: string; avatar: string; storeInfo: Store }) => {
             return {
               ...item.storeInfo,
-              avatar: item.avatar || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK3G5Veo7I2HV2jVY8zYS_nPgYQkocDzRsRA&s',
+              avatar:
+                item.avatar ||
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK3G5Veo7I2HV2jVY8zYS_nPgYQkocDzRsRA&s",
               _id: item._id,
-
             };
           }
         );
@@ -65,9 +67,23 @@ const Home = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <div className="bg-meringue text-white py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-strawberry text-4xl md:text-5xl font-extrabold mb-4">
+      <div
+        className="bg-gray-200 text-white py-16 relative bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('/Artboard 1.png')",
+          zIndex: 1000,
+        }}
+      >
+        <img 
+          src={banner}
+          alt="Hero Background"
+          className="absolute inset-0 w-full h-full object-cover opacity-80"
+        />
+        {/* Overlay để làm tối background nếu cần */}
+        {/* <div className="absolute inset-0 bg-black bg-opacity-20"></div> */}
+
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <h1 className="text-strawberry text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">
             <Typewriter
               words={["Rent Designer Fashion For Any Occasion"]}
               loop={true}
@@ -78,7 +94,7 @@ const Home = () => {
               delaySpeed={2000}
             />
           </h1>
-          <p className="text-strawberry text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+          <p className="text-strawberry text-xl md:text-2xl mb-8 max-w-3xl mx-auto drop-shadow-md">
             Choose from hundreds of styles across multiple boutiques and
             designers
           </p>
@@ -91,7 +107,7 @@ const Home = () => {
             </Link>
             <Link
               to="/stores"
-              className="px-10 py-4 bg-transparent border-2 border-blueberry text-blueberry font-semibold rounded-lg hover:bg-gray-300 transition"
+              className="px-10 py-4 bg-red-400 border-2 border-white text-blueberry font-semibold rounded-lg hover:bg-gray-100 transition"
             >
               Explore Stores
             </Link>

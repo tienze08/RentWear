@@ -55,11 +55,21 @@ interface RecentActivity {
   date: string;
 }
 
+interface PaymentSummary {
+  totalRevenue: number;
+  totalExpenses: number;
+  totalProfit: number;
+  profitMargin: number;
+}
+
 const Dashboard = () => {
   const [overview, setOverview] = useState<DashboardOverview | null>(null);
   const [monthlyRevenue, setMonthlyRevenue] = useState<MonthlyRevenue[]>([]);
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>(
     []
+  );
+  const [paymentSummary, setPaymentSummary] = useState<PaymentSummary | null>(
+    null
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -70,14 +80,17 @@ const Dashboard = () => {
         setLoading(true);
         setError(null);
 
-        const [overviewRes, monthlyRevenueRes] = await Promise.all([
-          axiosInstance.get(ApiConstants.DASHBOARD_OVERVIEW),
-          axiosInstance.get(ApiConstants.DASHBOARD_MONTHLY_REVENUE),
-        ]);
+        const [overviewRes, monthlyRevenueRes, paymentSummaryRes] =
+          await Promise.all([
+            axiosInstance.get(ApiConstants.DASHBOARD_OVERVIEW),
+            axiosInstance.get(ApiConstants.DASHBOARD_MONTHLY_REVENUE),
+            axiosInstance.get(ApiConstants.PAYMENT_SUMMARY),
+          ]);
 
         setOverview(overviewRes.data.overview);
         setRecentActivities(overviewRes.data.recentActivities);
         setMonthlyRevenue(monthlyRevenueRes.data);
+        setPaymentSummary(paymentSummaryRes.data);
       } catch (err: unknown) {
         console.error("Error fetching dashboard data:", err);
         const errorMessage =
@@ -140,30 +153,28 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <DashboardCard
           title="Total Users"
-          value={overview?.totalUsers?.toString() || "0"}
+          value={overview.totalUsers.toString()}
           description="Active accounts"
           icon={Users}
           trend={12}
         />
         <DashboardCard
           title="Total Products"
-          value={overview?.totalProducts?.toString() || "0"}
+          value={overview.totalProducts.toString()}
           description="In inventory"
           icon={Package}
           trend={-2}
         />
         <DashboardCard
           title="Partner Stores"
-          value={overview?.totalStores?.toString() || "0"}
+          value={overview.totalStores.toString()}
           description="Active stores"
           icon={Store}
           trend={8}
         />
         <DashboardCard
           title="Total Revenue"
-          value={`${
-            overview?.totalRevenue?.toLocaleString("vi-VN") || "0"
-          } VND`}
+          value={`${overview.totalRevenue.toLocaleString("vi-VN")} VND`}
           description="All time"
           icon={DollarSign}
           trend={15}
@@ -180,7 +191,7 @@ const Dashboard = () => {
           <CardContent>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={monthlyRevenue || []}>
+                <AreaChart data={monthlyRevenue}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="monthName" />
                   <YAxis
@@ -221,7 +232,7 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <span className="text-blue-600 font-bold">
-                  {overview?.totalRentals || 0}
+                  {overview.totalRentals}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
@@ -232,7 +243,7 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <span className="text-green-600 font-bold">
-                  {overview?.totalActiveRentals || 0}
+                  {overview.totalActiveRentals}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
@@ -241,7 +252,7 @@ const Dashboard = () => {
                   <span className="font-medium text-purple-800">Completed</span>
                 </div>
                 <span className="text-purple-600 font-bold">
-                  {overview?.totalCompletedRentals || 0}
+                  {overview.totalCompletedRentals}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
@@ -250,7 +261,7 @@ const Dashboard = () => {
                   <span className="font-medium text-orange-800">Reports</span>
                 </div>
                 <span className="text-orange-600 font-bold">
-                  {overview?.totalReports || 0}
+                  {overview.totalReports}
                 </span>
               </div>
             </div>
@@ -267,7 +278,7 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentActivities && recentActivities.length > 0 ? (
+            {recentActivities.length > 0 ? (
               recentActivities.map((activity) => (
                 <div
                   key={activity.id}

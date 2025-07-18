@@ -1,5 +1,5 @@
-// const BASE_URL = "http://localhost:5000/api";
-const BASE_URL = "https://fasent-api.onrender.com/api";
+const BASE_URL = "http://localhost:5000/api";
+// const BASE_URL = "https://fasent-api.onrender.com/api";
 
 const ApiConstants = {
   //Auth
@@ -32,26 +32,25 @@ const ApiConstants = {
   FEEDBACK: `${BASE_URL}/feedbacks`,
   GET_STORE_FEEDBACK: (storeId: string) =>
     `${BASE_URL}/feedbacks/store/${storeId}`,
-  CREATE_REPORT: `${BASE_URL}/reports`,
-  GET_ALL_REPORTS: `${BASE_URL}/reports`,
+    CREATE_REPORT: `${BASE_URL}/reports`, 
+  GET_ALL_REPORTS: `${BASE_URL}/reports`, 
   GET_REPORTS_BY_TARGET: (userId: string) =>
-    `${BASE_URL}/reports/target/${userId}`,
+    `${BASE_URL}/reports/target/${userId}`, 
 
-  BAN_USER: (id: string) => `${BASE_URL}/users/ban/${id}`,
+  BAN_USER: (id: string)   => `${BASE_URL}/users/ban/${id}`,
   UNBAN_USER: (id: string) => `${BASE_URL}/users/unban/${id}`,
   //Chat
   GET_USER_CONVERSATIONS: (userId: string) => `${BASE_URL}/chats/conversations/${userId}`,
   GET_CONVERSATION_MESSAGES: (conversationId: string) =>
     `${BASE_URL}/chats/messages/${conversationId}`,
   CREATE_OR_GET_CONVERSATION: `${BASE_URL}/chats/conversation`,
-  //Dashboard
+    //Dashboard
   DASHBOARD_OVERVIEW: `${BASE_URL}/dashboard/overview`,
   DASHBOARD_MONTHLY_REVENUE: `${BASE_URL}/dashboard/revenue/monthly`,
   DASHBOARD_TOP_PRODUCTS: `${BASE_URL}/dashboard/products/top-rented`,
   DASHBOARD_RENTAL_STATUS: `${BASE_URL}/dashboard/rentals/status`,
   DASHBOARD_USER_GROWTH: `${BASE_URL}/dashboard/users/growth`,
-  DASHBOARD_REVENUE_CATEGORY: `${BASE_URL}/dashboard/revenue/category`,
-
+  
   //Payment Summary
   PAYMENT_SUMMARY: `${BASE_URL}/payments/summary`,
 } as const;
