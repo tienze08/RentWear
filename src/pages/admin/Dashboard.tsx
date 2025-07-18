@@ -55,12 +55,12 @@ interface RecentActivity {
   date: string;
 }
 
-interface PaymentSummary {
-  totalRevenue: number;
-  totalExpenses: number;
-  totalProfit: number;
-  profitMargin: number;
-}
+// interface PaymentSummary {
+//   totalRevenue: number;
+//   totalExpenses: number;
+//   totalProfit: number;
+//   profitMargin: number;
+// }
 
 const Dashboard = () => {
   const [overview, setOverview] = useState<DashboardOverview | null>(null);
@@ -68,9 +68,9 @@ const Dashboard = () => {
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>(
     []
   );
-  const [paymentSummary, setPaymentSummary] = useState<PaymentSummary | null>(
-    null
-  );
+  // const [paymentSummary, setPaymentSummary] = useState<PaymentSummary | null>(
+  //   null
+  // );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,17 +80,17 @@ const Dashboard = () => {
         setLoading(true);
         setError(null);
 
-        const [overviewRes, monthlyRevenueRes, paymentSummaryRes] =
+        const [overviewRes, monthlyRevenueRes] =
           await Promise.all([
             axiosInstance.get(ApiConstants.DASHBOARD_OVERVIEW),
             axiosInstance.get(ApiConstants.DASHBOARD_MONTHLY_REVENUE),
-            axiosInstance.get(ApiConstants.PAYMENT_SUMMARY),
+            // axiosInstance.get(ApiConstants.PAYMENT_SUMMARY),
           ]);
 
         setOverview(overviewRes.data.overview);
         setRecentActivities(overviewRes.data.recentActivities);
         setMonthlyRevenue(monthlyRevenueRes.data);
-        setPaymentSummary(paymentSummaryRes.data);
+        // setPaymentSummary(paymentSummaryRes.data);
       } catch (err: unknown) {
         console.error("Error fetching dashboard data:", err);
         const errorMessage =
