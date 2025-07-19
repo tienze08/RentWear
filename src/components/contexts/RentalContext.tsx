@@ -65,10 +65,7 @@ export const RentalProvider: React.FC<{ children: React.ReactNode }> = ({
     console.log("Cancelling rental with ID:", rentalId);
     console.log("Current rentals before cancellation:", rentals);
     setRentals((prev) => prev.filter((rental) => rental._id !== rentalId));
-    // Optionally, you can also make an API call to cancel the rental
-    axiosInstance.patch(`${ApiConstants.RENTALS}/${rentalId}`, {
-      status: "CANCELED",
-    });
+    axiosInstance.patch(`${ApiConstants.RENTALS}/${rentalId}/cancel`);
   };
 
   const getRentalsByStatus = (status: Rental["status"]) => {

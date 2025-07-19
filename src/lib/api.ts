@@ -23,7 +23,7 @@ const ApiConstants = {
   //Store
   GET_STORE_BY_ID: (storeId: string) => `${BASE_URL}/stores/${storeId}`,
   //Rental
-  GET_USER_RENTALS: `${BASE_URL}/rentals/user/me`,
+  GET_USER_RENTALS: `${BASE_URL}/rentals/user/legacy`,
   RENTALS: `${BASE_URL}/rentals`,
   //Payment
   GET_CUSTOMER_PAYMENTS: (customerId: string) =>
