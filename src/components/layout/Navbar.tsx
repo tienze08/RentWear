@@ -133,7 +133,7 @@ export const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full focus-visible:ring-2 focus-visible:ring-blueberry transition hover:cursor-pointer"
+                    className="rounded-full focus-visible:ring-2 focus-visible:ring-blueberry transition hover:cursor-pointer z-10"
                   >
                     <Avatar className="h-8 w-8 border border-gray-300">
                       {user?.avatar ? (

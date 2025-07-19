@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { ProductCard } from "@/components/product/ProductCard";
-import { getAllCategories } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,13 +30,19 @@ const Products = () => {
         const response = await axiosInstance.get(ApiConstants.LIST_PRODUCTS);
         const products = response.data;
         setProducts(products);
+
+        const uniqueCategories = [
+          ...new Set(products.map((product: Product) => product.category)),
+        ];
+        setCategories(uniqueCategories as string[]);
+
         console.log("Fetched products:", products);
+        console.log("Available categories:", uniqueCategories);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
     fetchProducts();
-    setCategories(getAllCategories());
   }, [searchParams]);
 
   // Apply filters
@@ -50,7 +55,9 @@ const Products = () => {
       result = result.filter(
         (product) =>
           product.name.toLowerCase().includes(query) ||
-          product.description.toLowerCase().includes(query)
+          (product.description &&
+            product.description.toLowerCase().includes(query)) ||
+          product.category.toLowerCase().includes(query)
       );
     }
 

@@ -71,7 +71,7 @@ const Home = () => {
         className="bg-gray-200 text-white py-16 relative bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: "url('/Artboard 1.png')",
-          zIndex: 1000,
+          zIndex: 1,
         }}
       >
         <img 

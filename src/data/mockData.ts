@@ -205,11 +205,9 @@
 //   return mockProducts.filter(product => product.category === category);
 // };
 const category = [
-  "Outerwear",
-  "Tops",
-  "Bottoms",
-  "Dresses",
-  "Accessories"
+  "SUIT",
+  "DRESSES",
+  "ACCESSORIES"
 ]
 export const getAllCategories = (): string[] => {
   return category;
