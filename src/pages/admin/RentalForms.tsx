@@ -47,7 +47,7 @@ const RentalForms = () => {
         const fetchRentals = async () => {
             try {
                 const res = await axiosInstance.get(
-                    "http://localhost:5000/api/rentals"
+                    "https://fasent-api.onrender.com/api/rentals"
                 );
                 setRentals(res.data);
             } catch (err) {
