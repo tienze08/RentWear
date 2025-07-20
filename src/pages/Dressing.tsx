@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import {
     Upload,
@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useRental } from "@/components/contexts/RentalContext";
+
 
 interface UploadedImage {
     id: string;
@@ -19,22 +21,24 @@ interface UploadedImage {
     file: File;
 }
 
-const sampleClothes = [
-    {
-        id: "sample1",
-        url: "https://res.cloudinary.com/dns6shagj/image/upload/v1752682139/fashion-rental/oba0mfrpkb9prktjkqvo.jpg",
-        name: "Đầm ren cổ vuông",
-        type: "full",
-    },
-    {
-        id: "sample2",
-        url: "https://res.cloudinary.com/dns6shagj/image/upload/v1752681590/fashion-rental/umnl2fhu9gdceoofh04a.jpg",
-        name: "Đầm hai dây",
-        type: "upper",
-    },
-];
+// const sampleClothes = [
+//     {
+//         id: "sample1",
+//         url: "https://res.cloudinary.com/dns6shagj/image/upload/v1752682139/fashion-rental/oba0mfrpkb9prktjkqvo.jpg",
+//         name: "Đầm ren cổ vuông",
+//         type: "full",
+//     },
+//     {
+//         id: "sample2",
+//         url: "https://res.cloudinary.com/dns6shagj/image/upload/v1752681590/fashion-rental/umnl2fhu9gdceoofh04a.jpg",
+//         name: "Đầm hai dây",
+//         type: "upper",
+//     },
+// ];
+
 
 function Dressing() {
+    const { rentals, fetchMyRentals } = useRental();
     const [modelImages, setModelImages] = useState<UploadedImage[]>([]);
     const [clothImages, setClothImages] = useState<UploadedImage[]>([]);
     const [selectedModelIndex, setSelectedModelIndex] = useState<number | null>(
@@ -59,6 +63,20 @@ function Dressing() {
 
     const modelInputRef = useRef<HTMLInputElement>(null);
     const clothInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        fetchMyRentals();
+    }, []);
+    const filteredRentals = rentals.filter((rental) => rental.status === "PENDING");
+    const products = filteredRentals.map((rental) => { return rental.productId });
+    console.log("products: ", products);
+    const sampleClothes = products.map((product) => ({
+        id: product._id,
+        name: product.name,
+        url: product.images[0],
+        type: "full"
+    }));
+    console.log("Sample clothes: ",sampleClothes)
 
     const addSampleCloth = (sample: (typeof sampleClothes)[0]) => {
         // Tạo một File object giả từ URL ảnh mẫu
