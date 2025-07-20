@@ -6,14 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { CalendarDays } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { rentalToasts } from "@/lib/toast-utils";
 import { Rental } from "@/lib/types";
 
 const MyRentals = () => {
   const { rentals, cancelRental } = useRental();
-  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("active");
-  
+
   const activeRentals = rentals.filter(
     (rental) => rental.status === "APPROVED"
   );
@@ -24,12 +23,13 @@ const MyRentals = () => {
     (rental) => rental.status === "CANCELED"
   );
 
-  const handleCancelRental = (rentalId: string) => {
-    cancelRental(rentalId);
-    toast({
-      title: "Rental cancelled",
-      description: "Your rental has been cancelled successfully.",
-    });
+  const handleCancelRental = async (rentalId: string) => {
+    try {
+      await cancelRental(rentalId);
+      rentalToasts.cancelSuccess();
+    } catch {
+      rentalToasts.cancelError();
+    }
   };
 
   const RentalCard = ({ rental }: { rental: Rental }) => (
@@ -103,19 +103,22 @@ const MyRentals = () => {
               value="active"
               className="data-[state=active]:bg-blue-400 data-[state=active]:text-white"
             >
-              Active ({activeRentals.filter((r) => r.status === "APPROVED").length})
+              Active (
+              {activeRentals.filter((r) => r.status === "APPROVED").length})
             </TabsTrigger>
             <TabsTrigger
               value="completed"
               className="data-[state=active]:bg-blue-400 data-[state=active]:text-white"
             >
-              Completed ({completedRentals.filter((r) => r.status === "RETURNED").length})
+              Completed (
+              {completedRentals.filter((r) => r.status === "RETURNED").length})
             </TabsTrigger>
             <TabsTrigger
               value="cancelled"
               className="data-[state=active]:bg-blue-400 data-[state=active]:text-white"
             >
-              Cancelled ({cancelledRentals.filter((r) => r.status === "CANCELED").length})
+              Cancelled (
+              {cancelledRentals.filter((r) => r.status === "CANCELED").length})
             </TabsTrigger>
           </TabsList>
 

@@ -6,7 +6,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 interface RentalContextType {
   rentals: Rental[];
   createRental: (rental: RentalFormData) => void;
-  cancelRental: (rentalId: string) => void;
+  cancelRental: (rentalId: string) => Promise<void>;
   getRentalsByStatus: (status: Rental["status"]) => Rental[];
   totalItems: number;
   loading: boolean;
@@ -61,18 +61,41 @@ export const RentalProvider: React.FC<{ children: React.ReactNode }> = ({
   //   }
   // };
 
-  const cancelRental = (rentalId: string) => {
-    console.log("Cancelling rental with ID:", rentalId);
-    console.log("Current rentals before cancellation:", rentals);
-    setRentals((prev) => prev.filter((rental) => rental._id !== rentalId));
-    axiosInstance.patch(`${ApiConstants.RENTALS}/${rentalId}/cancel`);
+  const cancelRental = async (rentalId: string) => {
+    try {
+      console.log("Cancelling rental with ID:", rentalId);
+      console.log("Current rentals before cancellation:", rentals);
+
+      // Gọi API cancel trước
+      const response = await axiosInstance.patch(
+        `${ApiConstants.RENTALS}/${rentalId}/cancel`
+      );
+
+      if (response.status === 200) {
+        // Chỉ update state khi API thành công
+        setRentals((prev) => prev.filter((rental) => rental?._id !== rentalId));
+        console.log("Rental cancelled successfully:", response.data);
+      }
+    } catch (error: unknown) {
+      console.error("Error cancelling rental:", error);
+      // Có thể thêm notification hoặc toast ở đây
+      const axiosError = error as {
+        response?: { data?: { message?: string } };
+      };
+      if (axiosError.response?.data?.message) {
+        alert(`Cannot cancel rental: ${axiosError.response.data.message}`);
+      } else {
+        alert("Failed to cancel rental. Please try again.");
+      }
+    }
   };
 
   const getRentalsByStatus = (status: Rental["status"]) => {
-    return rentals.filter((rental) => rental.status === status);
+    return rentals?.filter((rental) => rental?.status === status) || [];
   };
 
-  const totalItems = rentals.filter((r) => r.status === "PENDING").length;
+  const totalItems =
+    rentals?.filter((r) => r?.status === "PENDING")?.length || 0;
 
   return (
     <RentalContext.Provider
