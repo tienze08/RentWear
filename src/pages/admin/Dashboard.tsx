@@ -87,9 +87,10 @@ const Dashboard = () => {
             // axiosInstance.get(ApiConstants.PAYMENT_SUMMARY),
           ]);
 
-        setOverview(overviewRes.data.overview);
-        setRecentActivities(overviewRes.data.recentActivities);
-        setMonthlyRevenue(monthlyRevenueRes.data);
+        // Safe data extraction with fallbacks
+        setOverview(overviewRes?.data?.overview || null);
+        setRecentActivities(overviewRes?.data?.recentActivities || []);
+        setMonthlyRevenue(monthlyRevenueRes?.data || []);
         // setPaymentSummary(paymentSummaryRes.data);
       } catch (err: unknown) {
         console.error("Error fetching dashboard data:", err);
@@ -153,28 +154,28 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <DashboardCard
           title="Total Users"
-          value={overview.totalUsers.toString()}
+          value={(overview?.totalUsers || 0).toString()}
           description="Active accounts"
           icon={Users}
           trend={12}
         />
         <DashboardCard
           title="Total Products"
-          value={overview.totalProducts.toString()}
+          value={(overview?.totalProducts || 0).toString()}
           description="In inventory"
           icon={Package}
           trend={-2}
         />
         <DashboardCard
           title="Partner Stores"
-          value={overview.totalStores.toString()}
+          value={(overview?.totalStores || 0).toString()}
           description="Active stores"
           icon={Store}
           trend={8}
         />
         <DashboardCard
           title="Total Revenue"
-          value={`${overview.totalRevenue.toLocaleString("vi-VN")} VND`}
+          value={`${(overview?.totalRevenue || 0).toLocaleString("vi-VN")} VND`}
           description="All time"
           icon={DollarSign}
           trend={15}
@@ -191,7 +192,7 @@ const Dashboard = () => {
           <CardContent>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={monthlyRevenue}>
+                <AreaChart data={monthlyRevenue || []}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="monthName" />
                   <YAxis
@@ -232,7 +233,7 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <span className="text-blue-600 font-bold">
-                  {overview.totalRentals}
+                  {overview?.totalRentals || 0}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
@@ -243,7 +244,7 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <span className="text-green-600 font-bold">
-                  {overview.totalActiveRentals}
+                  {overview?.totalActiveRentals || 0}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
@@ -252,7 +253,7 @@ const Dashboard = () => {
                   <span className="font-medium text-purple-800">Completed</span>
                 </div>
                 <span className="text-purple-600 font-bold">
-                  {overview.totalCompletedRentals}
+                  {overview?.totalCompletedRentals || 0}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
@@ -261,7 +262,7 @@ const Dashboard = () => {
                   <span className="font-medium text-orange-800">Reports</span>
                 </div>
                 <span className="text-orange-600 font-bold">
-                  {overview.totalReports}
+                  {overview?.totalReports || 0}
                 </span>
               </div>
             </div>
@@ -278,10 +279,10 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentActivities.length > 0 ? (
+            {recentActivities && recentActivities.length > 0 ? (
               recentActivities.map((activity) => (
                 <div
-                  key={activity.id}
+                  key={activity?.id || Math.random()}
                   className="flex items-center justify-between p-3 border rounded-lg"
                 >
                   <div className="flex items-center gap-3">
@@ -290,19 +291,19 @@ const Dashboard = () => {
                     </div>
                     <div>
                       <p className="font-medium text-gray-800">
-                        {activity.customer} rented {activity.product}
+                        {activity?.customer || 'Unknown'} rented {activity?.product || 'Unknown Product'}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {new Date(activity.date).toLocaleDateString("vi-VN")}
+                        {activity?.date ? new Date(activity.date).toLocaleDateString("vi-VN") : 'Unknown Date'}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-gray-800">
-                      {activity.amount.toLocaleString("vi-VN")} VND
+                      {(activity?.amount || 0).toLocaleString("vi-VN")} VND
                     </p>
                     <p className="text-sm text-gray-500 capitalize">
-                      {activity.status}
+                      {activity?.status || 'Unknown'}
                     </p>
                   </div>
                 </div>
